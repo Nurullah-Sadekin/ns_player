@@ -1,8 +1,8 @@
 name: ns_player
 description: NSPlayer is a HLS(.m3u8) video player for flutter. The NsPlayer is a video player that allows you to select HLS video streaming by selecting the quality.
 version: 0.0.1
-homepage: https://github.com/Nurullah-Sadekin
-repository: https://github.com/Nurullah-Sadekin/lecle_yoyo_player-0.0.8
+homepage: https://github.com/Nurullah-Sadekin/ns_player/blob/main/example/lib/main.dart
+repository: https://github.com/Nurullah-Sadekin/ns_player
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
