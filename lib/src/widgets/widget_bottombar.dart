@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ns_player/ns_player.dart';
-import 'package:ns_player/src/utils/extensions/video_controller_extensions.dart';
 import 'package:ns_player/src/utils/utils.dart';
 import 'package:video_player/video_player.dart';
 

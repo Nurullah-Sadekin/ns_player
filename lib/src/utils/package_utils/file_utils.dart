@@ -1,6 +1,4 @@
 import 'dart:io';
-
-// import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';

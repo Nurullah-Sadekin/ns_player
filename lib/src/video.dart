@@ -8,8 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:ns_player/ns_player.dart';
 import 'package:ns_player/src/model/models.dart';
-import 'package:ns_player/src/utils/extensions/duration_extensions.dart';
-import 'package:ns_player/src/utils/extensions/screen_size_extensions.dart';
 import 'package:ns_player/src/utils/utils.dart';
 import 'package:ns_player/src/widgets/video_loading.dart';
 import 'package:ns_player/src/widgets/video_quality_picker.dart';
@@ -19,7 +17,7 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'responses/regex_response.dart';
 
-class YoYoPlayer extends StatefulWidget {
+class NsPlayer extends StatefulWidget {
   /// **Video source**
   /// ```dart
   /// url:"https://example.com/index.m3u8";
@@ -132,7 +130,7 @@ class YoYoPlayer extends StatefulWidget {
 
   ///
   /// ```dart
-  /// YoYoPlayer(
+  /// NsPlayer(
   /// // url types = (m3u8[hls],.mp4,.mkv)
   ///   url : "video_url",
   /// // Video's style
@@ -143,7 +141,7 @@ class YoYoPlayer extends StatefulWidget {
   ///   aspectRatio : 16/9,
   /// )
   /// ```
-  const YoYoPlayer({
+  const NsPlayer({
     super.key,
     required this.url,
     this.aspectRatio = 16 / 9,
@@ -169,10 +167,10 @@ class YoYoPlayer extends StatefulWidget {
   });
 
   @override
-  State<YoYoPlayer> createState() => _YoYoPlayerState();
+  State<NsPlayer> createState() => _NsPlayerState();
 }
 
-class _YoYoPlayerState extends State<YoYoPlayer>
+class _NsPlayerState extends State<NsPlayer>
     with SingleTickerProviderStateMixin {
   /// Video play type (hls,mp4,mkv,offline)
   String? playType;
