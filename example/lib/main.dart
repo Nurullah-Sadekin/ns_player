@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ns_player/ns_player.dart';
 
@@ -7,10 +8,10 @@ class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  _MyAppState createState() => _MyAppState();
+  MyAppState createState() => MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class MyAppState extends State<MyApp> {
   bool fullscreen = false;
 
   @override
@@ -33,16 +34,22 @@ class _MyAppState extends State<MyApp> {
             headers: const {'Referer': 'https://www.google.com'},
             allowCacheFile: true,
             onCacheFileCompleted: (files) {
-              print('Cached file length ::: ${files?.length}');
+              if (kDebugMode) {
+                print('Cached file length ::: ${files?.length}');
+              }
 
               if (files != null && files.isNotEmpty) {
                 for (var file in files) {
-                  print('File path ::: ${file.path}');
+                  if (kDebugMode) {
+                    print('File path ::: ${file.path}');
+                  }
                 }
               }
             },
             onCacheFileFailed: (error) {
-              print('Cache file error ::: $error');
+              if (kDebugMode) {
+                print('Cache file error ::: $error');
+              }
             },
             videoStyle: const VideoStyle(
               qualityStyle: TextStyle(
