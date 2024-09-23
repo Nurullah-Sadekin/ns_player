@@ -45,26 +45,6 @@ class NsPlayer extends StatefulWidget {
   ///```
   final VideoStyle videoStyle;
 
-  /// The style for the loading widget which use while waiting for the video to load.
-  /// ```dart
-  /// VideoLoadingStyle(
-  ///   loading: Center(
-  ///      child: Column(
-  ///      mainAxisAlignment: MainAxisAlignment.center,
-  ///      crossAxisAlignment: CrossAxisAlignment.center,
-  ///      children: const [
-  ///         Image(
-  ///           image: AssetImage('image/yoyo_logo.png'),
-  ///           fit: BoxFit.fitHeight,
-  ///           height: 50,
-  ///         ),
-  ///         SizedBox(height: 16.0),
-  ///         Text("Loading video..."),
-  ///       ],
-  ///     ),
-  ///   ),
-  //  ),
-  /// ```
   final VideoLoadingStyle videoLoadingStyle;
 
   /// Video aspect ratio. Ex: [aspectRatio: 16 / 9 ]
@@ -209,7 +189,7 @@ class _NsPlayerState extends State<NsPlayer>
   double? videoDurationSecond;
 
   /// m3u8 data video list for user choice
-  List<M3U8Data> yoyo = [];
+  List<M3U8Data> m3u8UrlList = [];
 
   List<double> playbackSpeeds = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
 
@@ -378,6 +358,36 @@ class _NsPlayerState extends State<NsPlayer>
       actionBar(),
       liveDirectButton(),
       bottomBar(),
+      Visibility(
+        visible: !showMenu,
+        child: Center(
+          child: AspectRatio(
+              aspectRatio: 16/9,
+            child: Stack(
+                  children: [
+                    fullScreen
+                        ? const SizedBox.shrink()
+                        : Align(
+                            alignment: Alignment.bottomCenter,
+                              child: SizedBox(
+                                height: 2,
+                                child: VideoProgressIndicator(
+                                  controller,
+                                  allowScrubbing: false,
+                                  colors: const VideoProgressColors(
+                                    playedColor: Color.fromARGB(255, 206, 3, 3),
+                                    bufferedColor: Color.fromARGB(169, 77, 68, 68),
+                                    backgroundColor: Color.fromARGB(27, 255, 255, 255),
+                                  ),
+                          padding: EdgeInsets.zero,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+        ),
+          )
       // m3u8List(),
     ];
   }
@@ -498,7 +508,7 @@ class _NsPlayerState extends State<NsPlayer>
     RenderBox? renderBox = videoQualityKey.currentContext?.findRenderObject() as RenderBox?;
     var offset = renderBox?.localToGlobal(Offset.zero);
     return VideoQualityPicker(
-      videoData: yoyo,
+      videoData: m3u8UrlList,
       videoStyle: widget.videoStyle,
       showPicker: m3u8Show,
       positionRight: (renderBox?.size.width ?? 0.0) / 3,
@@ -552,7 +562,8 @@ class _NsPlayerState extends State<NsPlayer>
           );
         }
         log("urlEnd===============>: $playType");
-      } else if (uri.pathSegments.last.endsWith("mp4")) {
+      }
+      else if (uri.pathSegments.last.endsWith("mp4")) {
         setState(() {
           playType = "MP4";
         });
@@ -573,7 +584,8 @@ class _NsPlayerState extends State<NsPlayer>
           );
         }
         log("urlEnd===============>: $playType");
-      } else if (uri.pathSegments.last.endsWith('webm')) {
+      }
+      else if (uri.pathSegments.last.endsWith('webm')) {
         setState(() {
           playType = "WEBM";
         });
@@ -594,7 +606,8 @@ class _NsPlayerState extends State<NsPlayer>
           );
         }
         log("urlEnd===============>: $playType");
-      } else if (uri.pathSegments.last.endsWith("m3u8")) {
+      }
+      else if (uri.pathSegments.last.endsWith("m3u8")) {
         setState(() {
           playType = "HLS";
         });
@@ -604,7 +617,8 @@ class _NsPlayerState extends State<NsPlayer>
         videoControlSetup(url);
         getM3U8(url);
 
-      } else {
+      }
+      else {
         print("urlEnd: null");
         videoControlSetup(url);
         getM3U8(url);
@@ -623,8 +637,8 @@ class _NsPlayerState extends State<NsPlayer>
 
   /// M3U8 Data Setup
   void getM3U8(String videoUrl) {
-    if (yoyo.isNotEmpty) {
-      print("${yoyo.length} : data start clean");
+    if (m3u8UrlList.isNotEmpty) {
+      print("${m3u8UrlList.length} : data start clean");
       m3u8Clean();
     }
     print("---- m3u8 fitch start ----\n$videoUrl\n--- please wait –––");
@@ -632,13 +646,8 @@ class _NsPlayerState extends State<NsPlayer>
   }
 
   Future<M3U8s?> m3u8Video(String? videoUrl) async {
-    yoyo.add(M3U8Data(dataQuality: "Auto", dataURL: videoUrl));
+    m3u8UrlList.add(M3U8Data(dataQuality: "Auto", dataURL: videoUrl));
 
-    // RegExp regExpAudio = RegExp(
-    //   RegexResponse.regexMEDIA,
-    //   caseSensitive: false,
-    //   multiLine: true,
-    // );
     RegExp regExp = RegExp(
       RegexResponse.regexM3U8Resolution,
       caseSensitive: false,
@@ -663,10 +672,8 @@ class _NsPlayerState extends State<NsPlayer>
 
         List<RegExpMatch> matches =
             regExp.allMatches(m3u8Content ?? '').toList();
-        // List<RegExpMatch> audioMatches =
-        //     regExpAudio.allMatches(m3u8Content ?? '').toList();
         print(
-            "--- HLS Data ----\n$m3u8Content \nTotal length: ${yoyo.length} \nFinish!!!");
+            "--- HLS Data ----\n$m3u8Content \nTotal length: ${m3u8UrlList.length} \nFinish!!!");
 
         for(RegExpMatch regExpMatch in matches)
         {
@@ -739,13 +746,15 @@ class _NsPlayerState extends State<NsPlayer>
                 widget.onCacheFileFailed?.call(e);
               }
             }
-
-            yoyo.add(M3U8Data(dataQuality: quality, dataURL: url));
+            //need to add the video quality to the list by the quality order.and auto quality should be the first one.
+            //  var orderBasedSerializedList = m3u8UrlList.map((e) => e.dataQuality).toList();
+            m3u8UrlList.add(M3U8Data(dataQuality: quality, dataURL: url));
           }
-        M3U8s m3u8s = M3U8s(m3u8s: yoyo);
+        M3U8s m3u8s = M3U8s(m3u8s: m3u8UrlList);
 
         print(
-            "--- m3u8 File write --- ${yoyo.map((e) => e.dataQuality == e.dataURL).toList()} --- length : ${yoyo.length} --- Success");
+            "--- m3u8 File write --- ${m3u8UrlList.map((e) =>
+            e.dataQuality == e.dataURL).toList()} --- length : ${m3u8UrlList.length} --- Success");
         return m3u8s;
       }
     }
@@ -873,7 +882,7 @@ class _NsPlayerState extends State<NsPlayer>
         // Play MP4 and WEBM video
         controller = VideoPlayerController.networkUrl(
           Uri.parse(url!),
-          formatHint: VideoFormat.other,
+           formatHint: VideoFormat.other,
           httpHeaders: widget.headers ?? const <String, String>{},
           closedCaptionFile: widget.closedCaptionFile,
           videoPlayerOptions: widget.videoPlayerOptions,
@@ -985,12 +994,12 @@ class _NsPlayerState extends State<NsPlayer>
   }
 
   void m3u8Clean() async {
-    print('Video list length: ${yoyo.length}');
-    for (int i = 2; i < yoyo.length; i++) {
+    print('Video list length: ${m3u8UrlList.length}');
+    for (int i = 2; i < m3u8UrlList.length; i++) {
       try {
         var file = await FileUtils.readFileFromPath(
-            videoUrl: yoyo[i].dataURL ?? '',
-            quality: yoyo[i].dataQuality ?? '');
+            videoUrl: m3u8UrlList[i].dataURL ?? '',
+            quality: m3u8UrlList[i].dataQuality ?? '');
         var exists = await file?.exists();
         if (exists ?? false) {
           await file?.delete();
@@ -1010,7 +1019,7 @@ class _NsPlayerState extends State<NsPlayer>
     audioList.clear();
     try {
       print("Cleaning m3u8 data list");
-      yoyo.clear();
+      m3u8UrlList.clear();
       print("Cleaning m3u8 data list completed");
     } catch (e) {
       print("m3u8 video list clean error $e");
@@ -1059,7 +1068,7 @@ class _NsPlayerState extends State<NsPlayer>
                   )
               ),
               VideoQualityPicker(
-                videoData: yoyo,
+                videoData: m3u8UrlList,
                 videoStyle: widget.videoStyle,
                 showPicker: true,
                 onQualitySelected: (data) {
