@@ -24,79 +24,131 @@ class MyAppState extends State<MyApp> {
         appBar: fullscreen == false
             ? null
             : null,
-        body: Padding(
-          padding: fullscreen
-              ? EdgeInsets.zero
-              : const EdgeInsets.only(top: 32.0),
-          child: NsPlayer(
-            aspectRatio: 16 / 9,
-            url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-            headers: const {'Referer': 'https://www.google.com'},
-            allowCacheFile: true,
-            onCacheFileCompleted: (files) {
-              if (kDebugMode) {
-                print('Cached file length ::: ${files?.length}');
-              }
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: fullscreen
+                    ? EdgeInsets.zero
+                    : const EdgeInsets.only(top: 32.0),
+                child: NsPlayer(
+                  aspectRatio: 16 / 9,
+                  url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+                  headers: const {'Referer': 'https://www.google.com'},
+                  allowCacheFile: true,
+                  onCacheFileCompleted: (files) {
+                    if (kDebugMode) {
+                      print('Cached file length ::: ${files?.length}');
+                    }
 
-              if (files != null && files.isNotEmpty) {
-                for (var file in files) {
-                  if (kDebugMode) {
-                    print('File path ::: ${file.path}');
-                  }
-                }
-              }
-            },
-            onCacheFileFailed: (error) {
-              if (kDebugMode) {
-                print('Cache file error ::: $error');
-              }
-            },
-            videoStyle: const VideoStyle(
-              qualityStyle: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
-              forwardAndBackwardBtSize: 30.0,
-              playButtonIconSize: 50.0,
-              // playIcon: Icon(
-              //   Icons.play_arrow_outlined,
-              //   size: 45.0,
-              //   color: Colors.white,
-              // ),
-              // pauseIcon: Icon(
-              //   Icons.pause_outlined,
-              //   size: 45.0,
-              //   color: Colors.white,
-              // ),
-              videoQualityPadding: EdgeInsets.all(5.0),
-              // showLiveDirectButton: true,
-              enableSystemOrientationsOverride: true,
-            ),
-            videoLoadingStyle: const VideoLoadingStyle(
-              loading: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image(
-                      image: AssetImage('image/yoyo_logo.png'),
-                      fit: BoxFit.fitHeight,
-                      height: 50,
+                    if (files != null && files.isNotEmpty) {
+                      for (var file in files) {
+                        if (kDebugMode) {
+                          print('File path ::: ${file.path}');
+                        }
+                      }
+                    }
+                  },
+                  onCacheFileFailed: (error) {
+                    if (kDebugMode) {
+                      print('Cache file error ::: $error');
+                    }
+                  },
+                  videoStyle: const VideoStyle(
+                    qualityStyle: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
                     ),
-                    SizedBox(height: 16.0),
-                    Text("Loading video..."),
-                  ],
+                    forwardAndBackwardBtSize: 30.0,
+                    playButtonIconSize: 50.0,
+                    // playIcon: Icon(
+                    //   Icons.play_arrow_outlined,
+                    //   size: 45.0,
+                    //   color: Colors.white,
+                    // ),
+                    // pauseIcon: Icon(
+                    //   Icons.pause_outlined,
+                    //   size: 45.0,
+                    //   color: Colors.white,
+                    // ),
+                    videoQualityPadding: EdgeInsets.all(5.0),
+                    // showLiveDirectButton: true,
+                    enableSystemOrientationsOverride: true,
+                  ),
+                  videoLoadingStyle: const VideoLoadingStyle(
+                    loading: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image(
+                            image: AssetImage('image/yoyo_logo.png'),
+                            fit: BoxFit.fitHeight,
+                            height: 50,
+                          ),
+                          SizedBox(height: 16.0),
+                          Text("Loading video..."),
+                        ],
+                      ),
+                    ),
+                  ),
+                  onFullScreen: (value) {
+                    setState(() {
+                      if (fullscreen != value) {
+                        fullscreen = value;
+                      }
+                    });
+                  },
                 ),
               ),
-            ),
-            onFullScreen: (value) {
-              setState(() {
-                if (fullscreen != value) {
-                  fullscreen = value;
-                }
-              });
-            },
+              if(fullscreen == false)
+              Column(
+                children: [
+                  Container(
+                    height: 20,
+                    width: double.infinity,
+                    color: Colors.black,
+                  ),
+                  Container(
+                    height: 20,
+                    width: double.infinity,
+                    color: Colors.white,
+                  ),
+                  Container(
+                    height: 20,
+                    width: double.infinity,
+                    color: Colors.black,
+                  ),
+                  Container(
+                    height: 20,
+                    width: double.infinity,
+                    color: Colors.white,
+                  ),
+                  Container(
+                    height: 20,
+                    width: double.infinity,
+                    color: Colors.black,
+                  ),
+                  Container(
+                    height: 20,
+                    width: double.infinity,
+                    color: Colors.white,
+                  ),
+                  Container(
+                    height: 20,
+                    width: double.infinity,
+                    color: Colors.black,
+                  ),
+                  Container(
+                    height: 20,
+                    width: double.infinity,
+                    color: Colors.white,
+                  )
+                ],
+              )
+            ],
           ),
         ),
       ),
