@@ -44,7 +44,7 @@ class VideoQualityPicker extends StatelessWidget {
                   : '${videoData[index].dataQuality.toString().split('x').last}p',
               style: const TextStyle(fontSize: 14)),
               onTap: () {
-                onQualitySelected?.call(videoData[index]);
+                    onQualitySelected?.call(videoData[index]);
                  },
                ),
               ),

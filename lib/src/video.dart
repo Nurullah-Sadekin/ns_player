@@ -1058,28 +1058,26 @@ class _NsPlayerState extends State<NsPlayer>
                     child: const Text(''),
                   )
               ),
-              Expanded(
-                child: VideoQualityPicker(
-                  videoData: yoyo,
-                  videoStyle: widget.videoStyle,
-                  showPicker: true,
-                  onQualitySelected: (data) {
-                    if (data.dataQuality != m3u8Quality) {
-                      setState(() {
-                        m3u8Quality = data.dataQuality ?? m3u8Quality;
-                      });
-                      onSelectQuality(data);
-                      print(
-                          "--- Quality select ---\nquality : ${data.dataQuality}\nlink : ${data.dataURL}");
-                    }
+              VideoQualityPicker(
+                videoData: yoyo,
+                videoStyle: widget.videoStyle,
+                showPicker: true,
+                onQualitySelected: (data) {
+                  if (data.dataQuality != m3u8Quality) {
                     setState(() {
-                      m3u8Show = false;
+                      m3u8Quality = data.dataQuality ?? m3u8Quality;
                     });
-                    // removeOverlay();
-                    Navigator.pop(context);
-                  },
-                  selectedQuality: m3u8Quality,
-                ),
+                    onSelectQuality(data);
+                    print(
+                        "--- Quality select ---\nquality : ${data.dataQuality}\nlink : ${data.dataURL}");
+                  }
+                  setState(() {
+                    m3u8Show = false;
+                  });
+                  // removeOverlay();
+                  Navigator.pop(context);
+                },
+                selectedQuality: m3u8Quality,
               ),
             ],
           ),
