@@ -209,17 +209,20 @@ class PlayerBottomBar extends StatelessWidget {
                         )
                       ],
                     ),
-                    VideoProgressIndicator(
-                      controller,
-                      allowScrubbing: videoStyle.allowScrubbing ?? true,
-                      colors: videoStyle.progressIndicatorColors ??
-                          const VideoProgressColors(
-                            playedColor: Color.fromARGB(255, 206, 3, 3),
-                            bufferedColor: Color.fromARGB(169, 77, 68, 68),
-                            backgroundColor: Color.fromARGB(27, 255, 255, 255),
+                    SizedBox(
+                      height: 15,
+                      child: VideoProgressIndicator(
+                        controller,
+                        allowScrubbing: videoStyle.allowScrubbing ?? true,
+                        colors: videoStyle.progressIndicatorColors ??
+                            const VideoProgressColors(
+                              playedColor: Color.fromARGB(255, 206, 3, 3),
+                              bufferedColor: Color.fromARGB(169, 77, 68, 68),
+                              backgroundColor: Color.fromARGB(27, 255, 255, 255),
 
-                          ),
-                      padding: videoStyle.progressIndicatorPadding ?? const EdgeInsets.only(top: 10.0),
+                            ),
+                        padding: videoStyle.progressIndicatorPadding ?? const EdgeInsets.only(top: 10.0),
+                      ),
                     ),
                     fullScreen
                         ? const SizedBox(height: 30,)

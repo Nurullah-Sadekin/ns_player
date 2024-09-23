@@ -238,6 +238,8 @@ class _NsPlayerState extends State<NsPlayer>
   /// and if not it will display with the disable color.
   bool isAtLivePosition = true;
 
+  bool hideQualityList = false;
+
   @override
   void initState() {
     super.initState();
@@ -398,31 +400,35 @@ class _NsPlayerState extends State<NsPlayer>
       visible: showMenu,
       child: Align(
         alignment: Alignment.topCenter,
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          padding: widget.videoStyle.actionBarPadding ??
-              const EdgeInsets.symmetric(
-                horizontal: 0.0,
-                vertical: 0.0,
-              ),
-          color: widget.videoStyle.actionBarBgColor,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              InkWell(
-                  onTap: ()=> showSettingsDialog(context),
-                  child: const Padding(
-                    padding: EdgeInsets.only(top: 8.0,left: 8.0,bottom:8.0),
-                    child: Icon(Icons.settings,
-                    color: Colors.white,
-                    size: 30.0,
+        child: AspectRatio(
+          aspectRatio:16/9,
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            padding: widget.videoStyle.actionBarPadding ??
+                const EdgeInsets.symmetric(
+                  horizontal: 0.0,
+                  vertical: 0.0,
+                ),
+            alignment: Alignment.topRight,
+            color: widget.videoStyle.actionBarBgColor,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                InkWell(
+                    onTap: ()=> showSettingsDialog(context),
+                    child: const Padding(
+                      padding: EdgeInsets.only(top: 8.0, left: 8.0,bottom:8.0),
+                      child: Icon(Icons.settings,
+                      color: Colors.white,
+                      size: 30.0,
+                      ),
                     ),
-                  ),
-              ),
-              SizedBox(
-                width: widget.videoStyle.qualityButtonAndFullScrIcoSpace,
-              ),
-            ],
+                ),
+                SizedBox(
+                  width: widget.videoStyle.qualityButtonAndFullScrIcoSpace,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -912,6 +918,7 @@ class _NsPlayerState extends State<NsPlayer>
     } else {
       print(
           "--- Player status ---\nplay url : $url\noffline : $isOffline\n--- start playing –––");
+       hideQualityList = true;
       controller = VideoPlayerController.file(
         File(url!),
         closedCaptionFile: widget.closedCaptionFile,
@@ -1049,46 +1056,48 @@ class _NsPlayerState extends State<NsPlayer>
               topRight: Radius.circular(10.0),
             ),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              InkWell(
-                  onTap: () {
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 10.0),
+                      width: 70,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: const Text(''),
+                    )
+                ),
+                VideoQualityPicker(
+                  videoData: m3u8UrlList,
+                  videoStyle: widget.videoStyle,
+                  showPicker: true,
+                  onQualitySelected: (data) {
+                    if (data.dataQuality != m3u8Quality) {
+                      setState(() {
+                        m3u8Quality = data.dataQuality ?? m3u8Quality;
+                      });
+                      onSelectQuality(data);
+                      print(
+                          "--- Quality select ---\nquality : ${data.dataQuality}\nlink : ${data.dataURL}");
+                    }
+                    setState(() {
+                      m3u8Show = false;
+                    });
+                    // removeOverlay();
                     Navigator.pop(context);
                   },
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 10.0),
-                    width: 70,
-                    height: 5,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: const Text(''),
-                  )
-              ),
-              VideoQualityPicker(
-                videoData: m3u8UrlList,
-                videoStyle: widget.videoStyle,
-                showPicker: true,
-                onQualitySelected: (data) {
-                  if (data.dataQuality != m3u8Quality) {
-                    setState(() {
-                      m3u8Quality = data.dataQuality ?? m3u8Quality;
-                    });
-                    onSelectQuality(data);
-                    print(
-                        "--- Quality select ---\nquality : ${data.dataQuality}\nlink : ${data.dataURL}");
-                  }
-                  setState(() {
-                    m3u8Show = false;
-                  });
-                  // removeOverlay();
-                  Navigator.pop(context);
-                },
-                selectedQuality: m3u8Quality,
-              ),
-            ],
+                  selectedQuality: m3u8Quality,
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -1109,51 +1118,53 @@ class _NsPlayerState extends State<NsPlayer>
               topRight: Radius.circular(10.0),
             ),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 10.0),
-                    width: 70,
-                    height: 5,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: const Text(''),
-                  )
-              ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: List.generate(playbackSpeeds.length,
-                    (index)=> ListTile(
-                      leading: Icon(
-                        Icons.check,
-                        color: playbackSpeeds[index] == playbackSpeed
-                            ?  Colors.green
-                            :  Colors.transparent,
-                        size: 20,),
-                      title: Text(
-                          playbackSpeeds[index] == 1.0
-                            ? 'Normal'
-                            : '${playbackSpeeds[index]}x',
-                      style: const TextStyle(
-                        fontSize: 14
-                      ),),
-                      onTap: () {
-                        setState(() {
-                          playbackSpeed = playbackSpeeds[index];
-                        });
-                        onPlayBackSpeedChange(setPlaybackSpeed: playbackSpeed);
-                        Navigator.pop(context);
-                      },
-                    )),
-              ),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 10.0),
+                      width: 70,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: const Text(''),
+                    )
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: List.generate(playbackSpeeds.length,
+                      (index)=> ListTile(
+                        leading: Icon(
+                          Icons.check,
+                          color: playbackSpeeds[index] == playbackSpeed
+                              ?  Colors.green
+                              :  Colors.transparent,
+                          size: 20,),
+                        title: Text(
+                            playbackSpeeds[index] == 1.0
+                              ? 'Normal'
+                              : '${playbackSpeeds[index]}x',
+                        style: const TextStyle(
+                          fontSize: 14
+                        ),),
+                        onTap: () {
+                          setState(() {
+                            playbackSpeed = playbackSpeeds[index];
+                          });
+                          onPlayBackSpeedChange(setPlaybackSpeed: playbackSpeed);
+                          Navigator.pop(context);
+                        },
+                      )),
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -1187,8 +1198,8 @@ class _NsPlayerState extends State<NsPlayer>
             topRight: Radius.circular(10.0),
           ),
         ),
-        height: 200,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             InkWell(
                 onTap: () {
@@ -1205,6 +1216,7 @@ class _NsPlayerState extends State<NsPlayer>
                   child: const Text(''),
                 )
             ),
+            if(!hideQualityList)
             ListTile(
               leading: const Icon(Icons.tune),
               title: const Text("Quality",style: TextStyle(fontSize: 14.0,color: Colors.black),),
