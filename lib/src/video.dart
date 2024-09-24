@@ -981,9 +981,9 @@ class _NsPlayerState extends State<NsPlayer>
   void onSelectQuality(M3U8Data data) async {
     lastPlayedPos = await controller.position;
 
-    if (controller.value.isPlaying) {
-      await controller.pause();
-    }
+    // if (controller.value.isPlaying) {
+    //   await controller.pause();
+    // }
 
     if (data.dataQuality == "Auto") {
       videoControlSetup(data.dataURL);

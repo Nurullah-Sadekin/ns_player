@@ -32,7 +32,7 @@ class MyAppState extends State<MyApp> {
             aspectRatio: 16 / 9,
             url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
             headers: const {'Referer': 'https://www.google.com'},
-            allowCacheFile: true,
+            allowCacheFile: false,
             autoPlayVideoAfterInit: true,
             onCacheFileCompleted: (files) {
               if (kDebugMode) {

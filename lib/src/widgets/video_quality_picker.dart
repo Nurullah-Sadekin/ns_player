@@ -41,7 +41,8 @@ class VideoQualityPicker extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: List.generate(videoData.length,(index)=> ListTile(
+            children: List.generate(
+              videoData.length,(index)=> ListTile(
               leading: Icon(
                 Icons.check,
                 color: videoData[index].dataQuality == selectedQuality
