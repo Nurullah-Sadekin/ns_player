@@ -30,7 +30,7 @@ class MyAppState extends State<MyApp> {
               : const EdgeInsets.only(top: 32.0),
           child: NsPlayer(
             aspectRatio: 16 / 9,
-            url: "https://vz-54f2a462-6a5.b-cdn.net/7567cbc5-7240-4300-b168-3a6cf34c3c03/playlist.m3u8",
+            url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
             headers: const {'Referer': 'https://www.google.com'},
             allowCacheFile: true,
             autoPlayVideoAfterInit: true,

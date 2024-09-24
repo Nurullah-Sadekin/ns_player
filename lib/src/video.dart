@@ -363,7 +363,7 @@ class _NsPlayerState extends State<NsPlayer>
       actionBar(),
       liveDirectButton(),
       bottomBar(),
-      // bufferStatus(),
+      bufferStatus(),
       Visibility(
         visible: !showMenu,
         child: Center(
@@ -392,7 +392,7 @@ class _NsPlayerState extends State<NsPlayer>
                   ],
                 ),
               ),
-        ),
+             ),
           )
       // m3u8List(),
     ];
@@ -440,21 +440,22 @@ class _NsPlayerState extends State<NsPlayer>
   }
 
   Widget bufferStatus() {
-    final bufferedDuration = controller.value.buffered.isNotEmpty
-        ? controller.value.buffered.last.end.inSeconds
-        : 0;
-    final totalDuration = controller.value.duration.inSeconds;
-    //get the bitrate from the video controller
-    var bitrate = 800;
-    final bufferedSizeKB = (bufferedDuration * bitrate) / 8;
-    final totalSizeKB = (totalDuration * bitrate) / 8;
+    // final bufferedDuration = controller.value.buffered.isNotEmpty
+    //     ? controller.value.buffered.last.end.inSeconds
+    //     : 0;
+    // final totalDuration = controller.value.duration.inSeconds;
+    // //get the bitrate from the video controller
+    // var bitrate = 800;
+    // final bufferedSizeKB = (bufferedDuration * bitrate) / 8;
+    // final totalSizeKB = (totalDuration * bitrate) / 8;
 
     return Visibility(
       visible: controller.value.isBuffering,
-      child: Center(
+      child: const Center(
         child:  Text(
-          'Buffering: ${bufferedSizeKB.toStringAsFixed(0)} KB of ${totalSizeKB.toStringAsFixed(0)} KB',
-          style: const TextStyle(
+          // 'Buffering: ${bufferedSizeKB.toStringAsFixed(0)} KB of ${totalSizeKB.toStringAsFixed(0)} KB',
+          'ভিডিও লোড হচ্ছে...',
+          style: TextStyle(
             color: Colors.white,
             fontSize: 16.0,
           ),
