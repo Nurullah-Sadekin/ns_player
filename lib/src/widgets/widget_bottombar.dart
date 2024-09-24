@@ -1,3 +1,4 @@
+import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:ns_player/ns_player.dart';
 import 'package:ns_player/src/utils/utils.dart';
@@ -62,100 +63,106 @@ class PlayerBottomBar extends StatelessWidget {
               // fullScreen
               //     ? const SizedBox(height: 70,)
               //     : const SizedBox(height: 30,),
-              Align(
-                alignment: Alignment.center,
-                child: Padding(
-                  padding: videoStyle.videoDurationsPadding ??
-                      const EdgeInsets.only(top: 8.0),
-                  child: SizedBox(
-                    width: fullScreen
-                        ? MediaQuery.of(context).size.width/2
-                        : double.infinity,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            controller.rewind().then((value) {
-                              onRewind?.call(controller.value);
-                            });
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.5),
-                              shape: BoxShape.circle,
-                            ),
-                            child: videoStyle.backwardIcon ??
-                                Icon(
-                                  Icons.replay_10_rounded,
-                                  color: videoStyle.forwardIconColor,
-                                  size: videoStyle.forwardAndBackwardBtSize,
-                                )
-                          ),
-                        ),
-                        InkWell(
-                          onTap: onPlayButtonTap,
-                          child: () {
-                            var defaultIcon = Container(
+              Visibility(
+                visible: !controller.value.isBuffering,
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: videoStyle.videoDurationsPadding ??
+                        const EdgeInsets.only(top: 8.0),
+                    child: SizedBox(
+                      width: fullScreen
+                          ? MediaQuery.of(context).size.width/3
+                          : MediaQuery.of(context).size.width/2,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              controller.rewind().then((value) {
+                                onRewind?.call(controller.value);
+                              });
+                            },
+                            child: Container(
                               padding: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
                                 color: Colors.black.withOpacity(0.5),
                                 shape: BoxShape.circle,
                               ),
-                              child:  Icon(
-                                controller.value.isPlaying
-                                    ? Icons.pause_outlined
-                                    : Icons.play_arrow_outlined,
-                                color: videoStyle.playButtonIconColor ??
-                                    Colors.white,
-                                size: videoStyle.playButtonIconSize ?? 35,
-                              ),
-                            );
-                            if (videoStyle.playIcon != null &&
-                                videoStyle.pauseIcon == null) {
-                              return controller.value.isPlaying
-                                  ? defaultIcon
-                                  : videoStyle.playIcon;
-                            }
-                            else if (videoStyle.pauseIcon != null &&
-                                videoStyle.playIcon == null) {
-                              return controller.value.isPlaying
-                                  ? videoStyle.pauseIcon
-                                  : defaultIcon;
-                            }
-                            else if (videoStyle.playIcon != null &&
-                                videoStyle.pauseIcon != null) {
-                              return controller.value.isPlaying
-                                  ? videoStyle.pauseIcon
-                                  : videoStyle.playIcon;
-                            }
-                            return defaultIcon;
-                          }(),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            controller.fastForward().then((value) {
-                              onFastForward?.call(controller.value);
-                            });
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.5),
-                              shape: BoxShape.circle,
+                              child: videoStyle.backwardIcon ??
+                                  Icon(
+                                    Icons.replay_10_rounded,
+                                    color: videoStyle.forwardIconColor,
+                                    size: fullScreen ? 25: 20,
+                                    // size: videoStyle.forwardAndBackwardBtSize,
+                                  )
                             ),
-                            child:  videoStyle.forwardIcon ??
-                                Icon(
-                                  Icons.forward_10_rounded,
-                                  color: videoStyle.forwardIconColor,
-                                  size: videoStyle.forwardAndBackwardBtSize,
-                                ),
                           ),
-                        ),
-                      ],
+                          InkWell(
+                            onTap: onPlayButtonTap,
+                            child: () {
+                              var defaultIcon = Container(
+                                padding: const EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.5),
+                                  shape: BoxShape.circle,
+                                ),
+                                child:  Icon(
+                                  controller.value.isPlaying
+                                      ? Icons.pause_outlined
+                                      : Icons.play_arrow_outlined,
+                                  color: videoStyle.playButtonIconColor ??
+                                      Colors.white,
+                                  size: fullScreen ? 35: 30,
+                                  // videoStyle.playButtonIconSize ?? (fullScreen ? 35: 25),
+                                ),
+                              );
+                              if (videoStyle.playIcon != null &&
+                                  videoStyle.pauseIcon == null) {
+                                return controller.value.isPlaying
+                                    ? defaultIcon
+                                    : videoStyle.playIcon;
+                              }
+                              else if (videoStyle.pauseIcon != null &&
+                                  videoStyle.playIcon == null) {
+                                return controller.value.isPlaying
+                                    ? videoStyle.pauseIcon
+                                    : defaultIcon;
+                              }
+                              else if (videoStyle.playIcon != null &&
+                                  videoStyle.pauseIcon != null) {
+                                return controller.value.isPlaying
+                                    ? videoStyle.pauseIcon
+                                    : videoStyle.playIcon;
+                              }
+                              return defaultIcon;
+                            }(),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              controller.fastForward().then((value) {
+                                onFastForward?.call(controller.value);
+                              });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.5),
+                                shape: BoxShape.circle,
+                              ),
+                              child:  videoStyle.forwardIcon ??
+                                  Icon(
+                                    Icons.forward_10_rounded,
+                                    color: videoStyle.forwardIconColor,
+                                    size: fullScreen ? 25: 20,
+                                    // size: videoStyle.forwardAndBackwardBtSize,
+                                  ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -197,18 +204,41 @@ class PlayerBottomBar extends StatelessWidget {
                         const Spacer(),
                         InkWell(
                           onTap: () => ScreenUtils.toggleFullScreen(fullScreen),
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 5.0),
-                            child: videoStyle.fullscreenIcon ??
-                                Icon(
-                                  fullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
-                                  color: videoStyle.fullScreenIconColor,
-                                  size: videoStyle.fullScreenIconSize,
-                                ),
+                          child: Container(
+                            color: Colors.transparent,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 10.0),
+                              child: videoStyle.fullscreenIcon ??
+                                  Icon(
+                                    fullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
+                                    color: videoStyle.fullScreenIconColor,
+                                    size: videoStyle.fullScreenIconSize,
+                                  ),
+                            ),
                           ),
                         )
                       ],
                     ),
+                    // ProgressBar(
+                    //       // key: controller.mywidgetkey.value,
+                    //       barHeight: 2,
+                    //       baseBarColor: Colors.white,
+                    //       bufferedBarColor: Colors.green[300],
+                    //       progressBarColor: Colors.red,
+                    //       thumbColor: Colors.red,
+                    //       thumbRadius: 5,
+                    //       progress: controller.value.position,
+                    //       total: controller.value.duration,
+                    //       // buffered: controller.value.buffered,
+                    //       buffered: durationRangeToDuration(controller.value.buffered),
+                    //       onSeek: (value) => controller.seekTo(value),
+                    //       barCapShape: BarCapShape.round,
+                    //       timeLabelPadding: 0,
+                    //       timeLabelTextStyle: const TextStyle(
+                    //         fontSize: 0
+                    //       ),
+                    //        timeLabelLocation: TimeLabelLocation.none,
+                    //     ),
                     SizedBox(
                       height: 15,
                       child: VideoProgressIndicator(
@@ -235,5 +265,11 @@ class PlayerBottomBar extends StatelessWidget {
         ),
       ),
     );
+  }
+  Duration durationRangeToDuration(List<DurationRange> durationRange) {
+    if (durationRange.isEmpty) {
+      return Duration.zero;
+    }
+    return durationRange.first.end;
   }
 }

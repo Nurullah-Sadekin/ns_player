@@ -284,7 +284,7 @@ class _NsPlayerState extends State<NsPlayer>
             widget.onFullScreen?.call(fullScreen);
           });
         }
-
+        // log('Controller Value=================>  ${controller.value.isBuffering.toString()}');
         WidgetsBinding.instance.scheduleFrame();
       });
     });
@@ -344,14 +344,17 @@ class _NsPlayerState extends State<NsPlayer>
                               ? Colors.black.withOpacity(0.2)
                               : Colors.transparent,
                         ),
-                          child: VideoPlayer(controller)),
+                          child: VideoPlayer(
+                              controller,
+                          )
+                      ),
                     ),
                   ),
                 ),
                 ...videoBuiltInChildren(),
               ],
             )
-          : VideoLoading(loadingStyle: widget.videoLoadingStyle),
+          : VideoLoading(loadingStyle: widget.videoLoadingStyle, thumbUrl:widget.url),
     );
   }
 
@@ -360,6 +363,7 @@ class _NsPlayerState extends State<NsPlayer>
       actionBar(),
       liveDirectButton(),
       bottomBar(),
+      // bufferStatus(),
       Visibility(
         visible: !showMenu,
         child: Center(
@@ -429,6 +433,30 @@ class _NsPlayerState extends State<NsPlayer>
                 ),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget bufferStatus() {
+    final bufferedDuration = controller.value.buffered.isNotEmpty
+        ? controller.value.buffered.last.end.inSeconds
+        : 0;
+    final totalDuration = controller.value.duration.inSeconds;
+    //get the bitrate from the video controller
+    var bitrate = 800;
+    final bufferedSizeKB = (bufferedDuration * bitrate) / 8;
+    final totalSizeKB = (totalDuration * bitrate) / 8;
+
+    return Visibility(
+      visible: controller.value.isBuffering,
+      child: Center(
+        child:  Text(
+          'Buffering: ${bufferedSizeKB.toStringAsFixed(0)} KB of ${totalSizeKB.toStringAsFixed(0)} KB',
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16.0,
           ),
         ),
       ),

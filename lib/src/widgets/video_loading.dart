@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:ns_player/ns_player.dart';
 
@@ -7,10 +9,12 @@ class VideoLoading extends StatelessWidget {
   const VideoLoading({
     super.key,
     this.loadingStyle,
+    required this.thumbUrl,
   });
 
   /// A model class to provide the custom style for the loading widget.
   final VideoLoadingStyle? loadingStyle;
+  final String thumbUrl;
 
   @override
   Widget build(BuildContext context) {
