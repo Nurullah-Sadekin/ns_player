@@ -65,6 +65,10 @@ class NsPlayer extends StatefulWidget {
   /// Callback function for rewind button tap event.
   final ValueChanged<VideoPlayerValue>? onRewind;
 
+  final ValueChanged<VideoPlayerValue>? onPause;
+
+  final ValueChanged<VideoPlayerValue>? onDispose;
+
   /// Callback function for live direct button tap event.
   final ValueChanged<VideoPlayerValue>? onLiveDirectTap;
 
@@ -143,7 +147,7 @@ class NsPlayer extends StatefulWidget {
     this.onVideoInitCompleted,
     this.closedCaptionFile,
     this.videoPlayerOptions,
-    this.onLiveDirectTap,
+    this.onLiveDirectTap, this.onPause, this.onDispose,
   });
 
   @override
@@ -354,7 +358,7 @@ class _NsPlayerState extends State<NsPlayer>
                 ...videoBuiltInChildren(),
               ],
             )
-          : VideoLoading(loadingStyle: widget.videoLoadingStyle, thumbUrl:widget.url),
+          : VideoLoading(loadingStyle: widget.videoLoadingStyle, thumbUrl: widget.url),
     );
   }
 
@@ -440,22 +444,21 @@ class _NsPlayerState extends State<NsPlayer>
   }
 
   Widget bufferStatus() {
-    // final bufferedDuration = controller.value.buffered.isNotEmpty
-    //     ? controller.value.buffered.last.end.inSeconds
-    //     : 0;
-    // final totalDuration = controller.value.duration.inSeconds;
-    // //get the bitrate from the video controller
-    // var bitrate = 800;
-    // final bufferedSizeKB = (bufferedDuration * bitrate) / 8;
-    // final totalSizeKB = (totalDuration * bitrate) / 8;
-
+    final bufferedDuration = controller.value.buffered.isNotEmpty
+        ? controller.value.buffered.last.end.inSeconds
+        : 0;
+    final totalDuration = controller.value.duration.inSeconds;
+    //get the bitrate from the video controller
+    var bitrate = 800;
+    final bufferedSizeKB = (bufferedDuration * bitrate) / 1024;
+    final totalSizeKB = (totalDuration * bitrate) / 1024;
     return Visibility(
       visible: controller.value.isBuffering,
-      child: const Center(
-        child:  Text(
-          // 'Buffering: ${bufferedSizeKB.toStringAsFixed(0)} KB of ${totalSizeKB.toStringAsFixed(0)} KB',
-          'ভিডিও লোড হচ্ছে...',
-          style: TextStyle(
+      child: Center(
+        child: Text(
+          'ভিডিও লোড হচ্ছে: ${bufferedSizeKB.toStringAsFixed(0)} KB of ${totalSizeKB.toStringAsFixed(0)} KB',
+          // 'ভিডিও লোড হচ্ছে...',
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 16.0,
           ),
@@ -929,6 +932,7 @@ class _NsPlayerState extends State<NsPlayer>
           httpHeaders: widget.headers ?? const <String, String>{},
           closedCaptionFile: widget.closedCaptionFile,
           videoPlayerOptions: widget.videoPlayerOptions,
+
         )..initialize().then((value) => seekToLastPlayingPosition);
       } else if (playType == "HLS") {
         controller = VideoPlayerController.networkUrl(
@@ -1362,6 +1366,7 @@ class _NsPlayerState extends State<NsPlayer>
   }
 
   void seekToLastPlayingPosition() {
+    controller.setPlaybackSpeed(playbackSpeed);
     if (lastPlayedPos != null) {
       controller.seekTo(lastPlayedPos!);
       widget.onVideoInitCompleted?.call(controller);

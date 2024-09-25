@@ -20,7 +20,7 @@ class VideoLoading extends StatelessWidget {
   Widget build(BuildContext context) {
     return loadingStyle?.loading ??
         Container(
-          color: loadingStyle?.loadingBackgroundColor ?? Colors.grey,
+          color: loadingStyle?.loadingBackgroundColor ?? Colors.black,
           child: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
