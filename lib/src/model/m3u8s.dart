@@ -1,6 +1,4 @@
-// import 'package:ns_player/src/model/m3u8.dart';
-import 'package:softmax/global_widgets/ns_player/src/model/m3u8.dart';
-
+import 'package:ns_player/src/model/m3u8.dart';
 /// The model to contains a list of m3U8 data
 class M3U8s {
   /// m3u8 data list

@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:ns_player/ns_player.dart';
 import 'package:ns_player/src/model/models.dart';
@@ -130,7 +131,7 @@ class _NsPlayerState extends State<NsPlayer>
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      onPopInvokedWithResult: (result,data) {
+      onPopInvoked: (result) {
         if(fullScreen){
           setState(() {
             fullScreen = !fullScreen;
