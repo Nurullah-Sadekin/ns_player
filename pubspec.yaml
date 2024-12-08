@@ -19,7 +19,7 @@ dependencies:
   path_provider: ^2.1.4
 #  flutter_screen_wake: ^1.0.2
   video_player: ^2.8.1
-#  wakelock_plus: ^1.2.8
+  wakelock_plus: ^1.1.6
   audio_video_progress_bar: ^2.0.3
 #  flutter_downloader: ^1.9.1
   path: ^1.8.3

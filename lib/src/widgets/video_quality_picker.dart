@@ -28,20 +28,21 @@ class VideoQualityPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // videoData.sort((a, b) {
-    //   if (a.dataQuality == 'Auto') {
-    //     return -1;
-    //   } else if (b.dataQuality == 'Auto') {
-    //     return 1;
-    //   } else {
-    //     return int.parse(a.dataQuality!.split('x').last)
-    //         .compareTo(int.parse(b.dataQuality!.split('x').last));
-    //   }
-    // });
+      videoData.sort((a, b) {
+        if (a.dataQuality == 'Auto') {
+          return -1;
+        } else if (b.dataQuality == 'Auto') {
+          return 1;
+        } else {
+          return int.parse(a.dataQuality!.split('x').last)
+              .compareTo(int.parse(b.dataQuality!.split('x').last));
+        }
+      });
     return SingleChildScrollView(
       child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: List.generate(videoData.length,(index)=> ListTile(
+            children: List.generate(
+              videoData.length,(index)=> ListTile(
               leading: Icon(
                 Icons.check,
                 color: videoData[index].dataQuality == selectedQuality
