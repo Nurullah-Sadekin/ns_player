@@ -13,7 +13,7 @@ import 'package:ns_player/src/widgets/video_loading.dart';
 import 'package:ns_player/src/widgets/video_quality_picker.dart';
 import 'package:ns_player/src/widgets/widget_bottombar.dart';
 import 'package:video_player/video_player.dart';
-import 'package:wakelock_plus/wakelock_plus.dart';
+// import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'responses/regex_response.dart';
 
@@ -826,9 +826,9 @@ class _NsPlayerState extends State<NsPlayer>
     }
 
     if (controller.value.isInitialized && controller.value.isPlaying) {
-      if (!await WakelockPlus.enabled) {
-        await WakelockPlus.enable();
-      }
+      // if (!await WakelockPlus.enabled) {
+      //   await WakelockPlus.enable();
+      // }
 
       setState(() {
         videoDuration = controller.value.duration.convertDurationToString();
@@ -837,10 +837,10 @@ class _NsPlayerState extends State<NsPlayer>
         videoDurationSecond = controller.value.duration.inSeconds.toDouble();
       });
     } else {
-      if (await WakelockPlus.enabled) {
-        await WakelockPlus.disable();
-        setState(() {});
-      }
+      // if (await WakelockPlus.enabled) {
+      //   await WakelockPlus.disable();
+      //   setState(() {});
+      // }
     }
   }
 
