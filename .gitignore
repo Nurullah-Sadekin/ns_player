@@ -2,3 +2,5 @@
 /.dart_tool/
 /example/.dart_tool/
 /example/build/
+/packages/video_player_android/android/.gradle
+/packages/video_player_android/android/.idea
