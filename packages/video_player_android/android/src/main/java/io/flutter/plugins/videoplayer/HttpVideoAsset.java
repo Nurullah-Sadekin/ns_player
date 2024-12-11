@@ -16,14 +16,9 @@ import androidx.annotation.VisibleForTesting;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.MimeTypes;
 import androidx.media3.common.util.UnstableApi;
+import androidx.media3.datasource.DataSource;
 import androidx.media3.datasource.DefaultDataSource;
 import androidx.media3.datasource.DefaultHttpDataSource;
-import androidx.media3.datasource.cache.Cache;
-import androidx.media3.datasource.cache.CacheDataSource;
-import androidx.media3.database.StandaloneDatabaseProvider;
-import androidx.media3.datasource.cache.CacheEvictor;
-import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor;
-import androidx.media3.datasource.cache.SimpleCache;
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.exoplayer.source.MediaSource;
 
@@ -96,24 +91,22 @@ final class HttpVideoAsset extends VideoAsset {
             userAgent = httpHeaders.get(HEADER_USER_AGENT);
         }
         unstableUpdateDataSourceFactory(initialFactory, httpHeaders, userAgent);
-        CacheDataSource.Factory cacheDataSourceFactory = createCacheDatabaseFactory(context, initialFactory);
-        // Create media source factory with cache
-        return new DefaultMediaSourceFactory(context)
-                .setDataSourceFactory(cacheDataSourceFactory);
+        DataSource.Factory dataSourceFactory = new DefaultDataSource.Factory(context, initialFactory);
+        return new DefaultMediaSourceFactory(context).setDataSourceFactory(dataSourceFactory);
     }
 
-    @OptIn(markerClass = UnstableApi.class)
-    CacheDataSource.Factory createCacheDatabaseFactory(Context context, DefaultHttpDataSource.Factory initialFactory){
-        // Setup cache for video streaming
-        File cacheDir = new File(context.getCacheDir(), "video_cache");
-        CacheEvictor cacheEvictor = new LeastRecentlyUsedCacheEvictor(100 * 1024 * 1024); // 100MB Cache
-        StandaloneDatabaseProvider databaseProvider = new StandaloneDatabaseProvider(context);
-        Cache simpleCache = new SimpleCache(cacheDir, cacheEvictor, databaseProvider);
-        return new CacheDataSource.Factory()
-                .setCache(simpleCache)
-                .setUpstreamDataSourceFactory(new DefaultDataSource.Factory(context, initialFactory))
-                .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR);
-    }
+//    @OptIn(markerClass = UnstableApi.class)
+//    CacheDataSource.Factory createCacheDatabaseFactory(Context context, DefaultHttpDataSource.Factory initialFactory){
+//        // Setup cache for video streaming
+//        File cacheDir = new File(context.getCacheDir(), "video_cache");
+//        CacheEvictor cacheEvictor = new LeastRecentlyUsedCacheEvictor(100 * 1024 * 1024); // 100MB Cache
+//        StandaloneDatabaseProvider databaseProvider = new StandaloneDatabaseProvider(context);
+//        Cache simpleCache = new SimpleCache(cacheDir, cacheEvictor, databaseProvider);
+//        return new CacheDataSource.Factory()
+//                .setCache(simpleCache)
+//                .setUpstreamDataSourceFactory(new DefaultDataSource.Factory(context, initialFactory))
+//                .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR);
+//    }
 
 
     // TODO: Migrate to stable API, see https://github.com/flutter/flutter/issues/147039.
@@ -122,10 +115,7 @@ final class HttpVideoAsset extends VideoAsset {
             @NonNull DefaultHttpDataSource.Factory factory,
             @NonNull Map<String, String> httpHeaders,
             @Nullable String userAgent) {
-        factory.setUserAgent(userAgent).setAllowCrossProtocolRedirects(true)
-                .setConnectTimeoutMs(10000)
-                .setReadTimeoutMs(10000);
-
+        factory.setUserAgent(userAgent).setAllowCrossProtocolRedirects(true);
         if (!httpHeaders.isEmpty()) {
             factory.setDefaultRequestProperties(httpHeaders);
         }

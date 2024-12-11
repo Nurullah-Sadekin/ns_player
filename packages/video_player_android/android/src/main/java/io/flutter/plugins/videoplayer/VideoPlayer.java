@@ -9,11 +9,6 @@ import static androidx.media3.common.Player.REPEAT_MODE_OFF;
 import static io.flutter.plugins.videoplayer.DeviceUtils.isLowEndDevice;
 
 import android.content.Context;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.OptIn;
@@ -28,7 +23,6 @@ import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector;
 import androidx.media3.exoplayer.trackselection.TrackSelector;
-import androidx.media3.exoplayer.upstream.DefaultBandwidthMeter;
 
 import io.flutter.view.TextureRegistry;
 
@@ -60,25 +54,23 @@ final class VideoPlayer implements TextureRegistry.SurfaceProducer.Callback {
       @NonNull VideoPlayerOptions options) {
     return new VideoPlayer(
         () -> {
-          DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter.Builder(context)
-                  .setInitialBitrateEstimate(500000) // initial estimate in bps
-                  .build();
-          Handler mainHandler = new Handler(Looper.getMainLooper());  // Using Handler for main thread
+//          DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter.Builder(context)
+//                  .setInitialBitrateEstimate(500000) // initial estimate in bps
+//                  .build();
+//          Handler mainHandler = new Handler(Looper.getMainLooper());  // Using Handler for main thread
 
           ExoPlayer.Builder builder =
               new ExoPlayer.Builder(context)
-                  .setMediaSourceFactory(asset.getMediaSourceFactory(context))
-                      .setTrackSelector(getTrackSelector(context))
-                      .setBandwidthMeter(bandwidthMeter);
-
-          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            bandwidthMeter.addEventListener(
-                    mainHandler,
-                    (elapsedMs, bytesTransferred, bitrateEstimate) ->
-                            Log.d("BandwidthMeter", "Bitrate: " + bitrateEstimate + " bps")
-            );
-          }
-
+                  .setMediaSourceFactory(asset.getMediaSourceFactory(context));
+                      // .setTrackSelector(getTrackSelector(context))
+//                      .setBandwidthMeter(bandwidthMeter);
+//          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+//            bandwidthMeter.addEventListener(
+//                    mainHandler,
+//                    (elapsedMs, bytesTransferred, bitrateEstimate) ->
+//                            Log.d("BandwidthMeter", "Bitrate: " + bitrateEstimate + " bps")
+//            );
+//          }
             return builder.build();
         },
         events,

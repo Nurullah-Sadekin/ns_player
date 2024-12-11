@@ -3,14 +3,9 @@
 // found in the LICENSE file.
 
 package io.flutter.plugins.videoplayer;
-
-import static io.flutter.plugins.videoplayer.DeviceUtils.isLowEndDevice;
-
 import android.content.Context;
-
 import androidx.annotation.NonNull;
 import androidx.media3.common.MediaItem;
-import androidx.media3.common.MimeTypes;
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.exoplayer.source.MediaSource;
 
@@ -22,17 +17,8 @@ final class LocalVideoAsset extends VideoAsset {
   @NonNull
   @Override
   MediaItem getMediaItem() {
-    return new MediaItem.Builder().setUri(assetUrl)
-            .setMimeType(getMimeType())
-            .build();
+    return new MediaItem.Builder().setUri(assetUrl).build();
   }
-
-
-  private String getMimeType() {
-    boolean isLowEnd = isLowEndDevice();
-    return isLowEnd ? MimeTypes.VIDEO_H264 : null;
-  }
-
 
   @Override
   MediaSource.Factory getMediaSourceFactory(Context context) {
