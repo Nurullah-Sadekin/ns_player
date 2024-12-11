@@ -18,10 +18,16 @@ import androidx.media3.common.MimeTypes;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.datasource.DefaultDataSource;
 import androidx.media3.datasource.DefaultHttpDataSource;
+import androidx.media3.datasource.cache.Cache;
+import androidx.media3.datasource.cache.CacheDataSource;
+import androidx.media3.database.StandaloneDatabaseProvider;
+import androidx.media3.datasource.cache.CacheEvictor;
+import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor;
+import androidx.media3.datasource.cache.SimpleCache;
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.exoplayer.source.MediaSource;
-import androidx.media3.exoplayer.trackselection.DefaultTrackSelector;
 
+import java.io.File;
 import java.util.Map;
 
 final class HttpVideoAsset extends VideoAsset {
@@ -90,38 +96,25 @@ final class HttpVideoAsset extends VideoAsset {
             userAgent = httpHeaders.get(HEADER_USER_AGENT);
         }
         unstableUpdateDataSourceFactory(initialFactory, httpHeaders, userAgent);
-
-
-        // Setup the TrackSelector for adaptive bitrate switching using the updated ExoPlayer API
-        DefaultTrackSelector trackSelector = new DefaultTrackSelector(context);
-
-
-        // Set parameters for adaptive bitrate based on device capabilities
-        boolean isLowEnd = isLowEndDevice();
-        DefaultTrackSelector.Parameters parameters = new DefaultTrackSelector.Parameters.Builder(context)
-                .setMaxVideoBitrate(isLowEnd ? 1000000 : 3000000)
-                .setAllowVideoMixedMimeTypeAdaptiveness(true)
-                .setAllowVideoNonSeamlessAdaptiveness(true)
-                .setAllowAudioMixedMimeTypeAdaptiveness(true)
-                .setAllowAudioNonSeamlessAdaptiveness(true)
-                .setForceLowestBitrate(isLowEnd)
-                .setPreferredVideoMimeTypes(MimeTypes.VIDEO_H264,
-                        MimeTypes.VIDEO_MP4,
-                        MimeTypes.VIDEO_AVI,
-                        MimeTypes.VIDEO_H265,
-                        MimeTypes.VIDEO_VP9)
-                .build();
-
-        // Apply the parameters to the track selector
-        trackSelector.setParameters(parameters);
-
-        // Create and configure the media source factory
-
+        CacheDataSource.Factory cacheDataSourceFactory = createCacheDatabaseFactory(context, initialFactory);
+        // Create media source factory with cache
         return new DefaultMediaSourceFactory(context)
-                .setDataSourceFactory(new DefaultDataSource.Factory(context, initialFactory));
-
-
+                .setDataSourceFactory(cacheDataSourceFactory);
     }
+
+    @OptIn(markerClass = UnstableApi.class)
+    CacheDataSource.Factory createCacheDatabaseFactory(Context context, DefaultHttpDataSource.Factory initialFactory){
+        // Setup cache for video streaming
+        File cacheDir = new File(context.getCacheDir(), "video_cache");
+        CacheEvictor cacheEvictor = new LeastRecentlyUsedCacheEvictor(100 * 1024 * 1024); // 100MB Cache
+        StandaloneDatabaseProvider databaseProvider = new StandaloneDatabaseProvider(context);
+        Cache simpleCache = new SimpleCache(cacheDir, cacheEvictor, databaseProvider);
+        return new CacheDataSource.Factory()
+                .setCache(simpleCache)
+                .setUpstreamDataSourceFactory(new DefaultDataSource.Factory(context, initialFactory))
+                .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR);
+    }
+
 
     // TODO: Migrate to stable API, see https://github.com/flutter/flutter/issues/147039.
     @OptIn(markerClass = UnstableApi.class)

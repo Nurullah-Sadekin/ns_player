@@ -6,17 +6,31 @@ package io.flutter.plugins.videoplayer;
 
 import static androidx.media3.common.Player.REPEAT_MODE_ALL;
 import static androidx.media3.common.Player.REPEAT_MODE_OFF;
+import static io.flutter.plugins.videoplayer.DeviceUtils.isLowEndDevice;
 
 import android.content.Context;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.OptIn;
 import androidx.annotation.RestrictTo;
 import androidx.annotation.VisibleForTesting;
 import androidx.media3.common.AudioAttributes;
 import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
+import androidx.media3.common.MimeTypes;
 import androidx.media3.common.PlaybackParameters;
+import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector;
+import androidx.media3.exoplayer.trackselection.TrackSelector;
+import androidx.media3.exoplayer.upstream.BandwidthMeter;
+import androidx.media3.exoplayer.upstream.DefaultBandwidthMeter;
+
 import io.flutter.view.TextureRegistry;
 
 final class VideoPlayer implements TextureRegistry.SurfaceProducer.Callback {
@@ -38,7 +52,7 @@ final class VideoPlayer implements TextureRegistry.SurfaceProducer.Callback {
    * @param options options for playback.
    * @return a video player instance.
    */
-  @NonNull
+  @OptIn(markerClass = UnstableApi.class) @NonNull
   static VideoPlayer create(
       @NonNull Context context,
       @NonNull VideoPlayerCallbacks events,
@@ -47,15 +61,53 @@ final class VideoPlayer implements TextureRegistry.SurfaceProducer.Callback {
       @NonNull VideoPlayerOptions options) {
     return new VideoPlayer(
         () -> {
+          DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter.Builder(context)
+                  .setInitialBitrateEstimate(500000) // initial estimate in bps
+                  .build();
+          Handler mainHandler = new Handler(Looper.getMainLooper());  // Using Handler for main thread
+
           ExoPlayer.Builder builder =
               new ExoPlayer.Builder(context)
-                  .setMediaSourceFactory(asset.getMediaSourceFactory(context));
-          return builder.build();
+                  .setMediaSourceFactory(asset.getMediaSourceFactory(context))
+                      .setTrackSelector(getTrackSelector(context))
+                      .setBandwidthMeter(bandwidthMeter);
+
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            bandwidthMeter.addEventListener(
+                    mainHandler,
+                    (elapsedMs, bytesTransferred, bitrateEstimate) ->
+                            Log.d("BandwidthMeter", "Bitrate: " + bitrateEstimate + " bps")
+            );
+          }
+
+            return builder.build();
         },
         events,
         surfaceProducer,
         asset.getMediaItem(),
         options);
+  }
+
+  @OptIn(markerClass = UnstableApi.class)
+  static TrackSelector getTrackSelector(Context context) {
+    // Setup the TrackSelector for adaptive bitrate switching using the updated ExoPlayer API
+    DefaultTrackSelector trackSelector = new DefaultTrackSelector(context);
+
+    // Set parameters for adaptive bitrate based on device capabilities
+    boolean isLowEnd = isLowEndDevice();
+    DefaultTrackSelector.Parameters parameters = new DefaultTrackSelector.Parameters.Builder(context)
+            .setMaxVideoBitrate(isLowEnd ? 1000000 : 3000000)
+            .setAllowVideoMixedMimeTypeAdaptiveness(!isLowEnd)
+            .setAllowVideoNonSeamlessAdaptiveness(!isLowEnd)
+            .setAllowAudioMixedMimeTypeAdaptiveness(!isLowEnd)
+            .setAllowAudioNonSeamlessAdaptiveness(!isLowEnd)
+            .setForceLowestBitrate(isLowEnd)
+            .setPreferredVideoMimeTypes(MimeTypes.VIDEO_H264, MimeTypes.VIDEO_MP4)
+            .build();
+
+    // Apply the parameters to the track selector
+    trackSelector.setParameters(parameters);
+    return  trackSelector;
   }
 
   /** A closure-compatible signature since {@link java.util.function.Supplier} is API level 24. */
