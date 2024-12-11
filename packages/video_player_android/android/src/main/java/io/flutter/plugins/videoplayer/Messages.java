@@ -114,10 +114,7 @@ public class Messages {
     }
 
     public void setHttpHeaders(@NonNull Map<String, String> setterArg) {
-      if (setterArg == null) {
-        throw new IllegalStateException("Nonnull field \"httpHeaders\" is null.");
-      }
-      this.httpHeaders = setterArg;
+        this.httpHeaders = setterArg;
     }
 
     /** Constructor is non-public to enforce null safety; use Builder. */
@@ -231,12 +228,10 @@ public class Messages {
 
     @Override
     protected Object readValueOfType(byte type, @NonNull ByteBuffer buffer) {
-      switch (type) {
-        case (byte) 129:
-          return CreateMessage.fromList((ArrayList<Object>) readValue(buffer));
-        default:
-          return super.readValueOfType(type, buffer);
-      }
+        if (type == (byte) 129) {
+            return CreateMessage.fromList((ArrayList<Object>) readValue(buffer));
+        }
+        return super.readValueOfType(type, buffer);
     }
 
     @Override

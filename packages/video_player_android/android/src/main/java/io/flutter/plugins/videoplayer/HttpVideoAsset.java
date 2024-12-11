@@ -16,11 +16,11 @@ import androidx.annotation.VisibleForTesting;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.MimeTypes;
 import androidx.media3.common.util.UnstableApi;
-import androidx.media3.datasource.DataSource;
 import androidx.media3.datasource.DefaultDataSource;
 import androidx.media3.datasource.DefaultHttpDataSource;
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.exoplayer.source.MediaSource;
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector;
 
 import java.util.Map;
 
@@ -81,6 +81,7 @@ final class HttpVideoAsset extends VideoAsset {
      * @param initialFactory initial factory, to be configured.
      * @return configured factory, or {@code null} if not needed for this asset type.
      */
+    @OptIn(markerClass = UnstableApi.class)
     @VisibleForTesting
     MediaSource.Factory getMediaSourceFactory(
             Context context, DefaultHttpDataSource.Factory initialFactory) {
@@ -89,8 +90,37 @@ final class HttpVideoAsset extends VideoAsset {
             userAgent = httpHeaders.get(HEADER_USER_AGENT);
         }
         unstableUpdateDataSourceFactory(initialFactory, httpHeaders, userAgent);
-        DataSource.Factory dataSourceFactory = new DefaultDataSource.Factory(context, initialFactory);
-        return new DefaultMediaSourceFactory(context).setDataSourceFactory(dataSourceFactory);
+
+
+        // Setup the TrackSelector for adaptive bitrate switching using the updated ExoPlayer API
+        DefaultTrackSelector trackSelector = new DefaultTrackSelector(context);
+
+
+        // Set parameters for adaptive bitrate based on device capabilities
+        boolean isLowEnd = isLowEndDevice();
+        DefaultTrackSelector.Parameters parameters = new DefaultTrackSelector.Parameters.Builder(context)
+                .setMaxVideoBitrate(isLowEnd ? 1000000 : 3000000)
+                .setAllowVideoMixedMimeTypeAdaptiveness(true)
+                .setAllowVideoNonSeamlessAdaptiveness(true)
+                .setAllowAudioMixedMimeTypeAdaptiveness(true)
+                .setAllowAudioNonSeamlessAdaptiveness(true)
+                .setForceLowestBitrate(isLowEnd)
+                .setPreferredVideoMimeTypes(MimeTypes.VIDEO_H264,
+                        MimeTypes.VIDEO_MP4,
+                        MimeTypes.VIDEO_AVI,
+                        MimeTypes.VIDEO_H265,
+                        MimeTypes.VIDEO_VP9)
+                .build();
+
+        // Apply the parameters to the track selector
+        trackSelector.setParameters(parameters);
+
+        // Create and configure the media source factory
+
+        return new DefaultMediaSourceFactory(context)
+                .setDataSourceFactory(new DefaultDataSource.Factory(context, initialFactory));
+
+
     }
 
     // TODO: Migrate to stable API, see https://github.com/flutter/flutter/issues/147039.
@@ -99,7 +129,10 @@ final class HttpVideoAsset extends VideoAsset {
             @NonNull DefaultHttpDataSource.Factory factory,
             @NonNull Map<String, String> httpHeaders,
             @Nullable String userAgent) {
-        factory.setUserAgent(userAgent).setAllowCrossProtocolRedirects(true);
+        factory.setUserAgent(userAgent).setAllowCrossProtocolRedirects(true)
+                .setConnectTimeoutMs(10000)
+                .setReadTimeoutMs(10000);
+
         if (!httpHeaders.isEmpty()) {
             factory.setDefaultRequestProperties(httpHeaders);
         }
