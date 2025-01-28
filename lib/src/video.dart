@@ -452,7 +452,7 @@ class _NsPlayerState extends State<NsPlayer>
       child: const Center(
         child:  Text(
           // 'Buffering: ${bufferedSizeKB.toStringAsFixed(0)} KB of ${totalSizeKB.toStringAsFixed(0)} KB',
-          'ভিডিও লোড হচ্ছে...',
+          'loading...',
           style: TextStyle(
             color: Colors.white,
             fontSize: 16.0,
