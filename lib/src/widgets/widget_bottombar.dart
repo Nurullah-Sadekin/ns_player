@@ -201,22 +201,22 @@ class PlayerBottomBar extends StatelessWidget {
                                 color: Colors.white70,
                               ),
                         ),
-                        const Spacer(),
-                        InkWell(
-                          onTap: () => ScreenUtils.toggleFullScreen(fullScreen),
-                          child: Container(
-                            color: Colors.transparent,
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 10.0),
-                              child: videoStyle.fullscreenIcon ??
-                                  Icon(
-                                    fullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
-                                    color: videoStyle.fullScreenIconColor,
-                                    size: videoStyle.fullScreenIconSize,
-                                  ),
-                            ),
-                          ),
-                        )
+                        // const Spacer(),
+                        // InkWell(
+                        //   onTap: () => ScreenUtils.toggleFullScreen(fullScreen),
+                        //   child: Container(
+                        //     color: Colors.transparent,
+                        //     child: Padding(
+                        //       padding: const EdgeInsets.only(right: 10.0),
+                        //       child: videoStyle.fullscreenIcon ??
+                        //           Icon(
+                        //             fullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
+                        //             color: videoStyle.fullScreenIconColor,
+                        //             size: videoStyle.fullScreenIconSize,
+                        //           ),
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                     // ProgressBar(

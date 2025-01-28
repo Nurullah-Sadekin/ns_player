@@ -243,9 +243,7 @@ class _NsPlayerState extends State<NsPlayer>
   @override
   void initState() {
     super.initState();
-
     urlCheck(widget.url);
-
     /// Control bar animation
     controlBarAnimationController = AnimationController(
         duration: const Duration(milliseconds: 300), vsync: this);
@@ -360,7 +358,7 @@ class _NsPlayerState extends State<NsPlayer>
 
   List<Widget> videoBuiltInChildren() {
     return [
-      actionBar(),
+      // actionBar(),
       liveDirectButton(),
       bottomBar(),
       bufferStatus(),
@@ -854,7 +852,6 @@ class _NsPlayerState extends State<NsPlayer>
             showMenu = false;
             m3u8Show = false;
             controlBarAnimationController.reverse();
-
             widget.onShowMenu?.call(showMenu, m3u8Show);
             removeOverlay();
           });
@@ -912,7 +909,6 @@ class _NsPlayerState extends State<NsPlayer>
     if (isOffline == false) {
       print(
           "--- Player status ---\nplay url : $url\noffline : $isOffline\n--- start playing –––");
-
       if (playType == "MP4" || playType == "WEBM") {
         // Play MP4 and WEBM video
         controller = VideoPlayerController.networkUrl(
