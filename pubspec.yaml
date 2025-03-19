@@ -12,10 +12,6 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^1.2.2
-  auto_orientation:
-    git:
-      url: https://github.com/Marco4763/auto_orientation.git
-      ref: agp_compatibility
   path_provider: ^2.1.4
 #  flutter_screen_wake: ^1.0.2
   video_player: ^2.9.1

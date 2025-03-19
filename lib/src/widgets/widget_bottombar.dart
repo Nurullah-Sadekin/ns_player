@@ -7,11 +7,11 @@ import 'package:video_player/video_player.dart';
 /// Widget use to display the bottom bar buttons and the time texts
 class PlayerBottomBar extends StatelessWidget {
   /// Constructor
-   PlayerBottomBar({
+  PlayerBottomBar({
     super.key,
     required this.controller,
     required this.showBottomBar,
-     required this.fullScreen,
+    required this.fullScreen,
     this.onPlayButtonTap,
     this.videoDuration = "00:00:00",
     this.videoSeek = "00:00:00",
@@ -23,7 +23,8 @@ class PlayerBottomBar extends StatelessWidget {
   /// The controller of the playing video.
   final VideoPlayerController controller;
 
-   bool fullScreen = false;
+  bool fullScreen = false;
+
   /// If set to [true] the bottom bar will appear and if you want that user can not interact with the bottom bar you can set it to [false].
   /// Default value is [true].
   final bool showBottomBar;
@@ -51,11 +52,9 @@ class PlayerBottomBar extends StatelessWidget {
     return Visibility(
       visible: showBottomBar,
       child: Padding(
-        padding: fullScreen
-            ? const EdgeInsets.symmetric(horizontal: 20)
-            :  videoStyle.bottomBarPadding,
+        padding: fullScreen ? const EdgeInsets.symmetric(horizontal: 20) : videoStyle.bottomBarPadding,
         child: AspectRatio(
-          aspectRatio: 16/9,
+          aspectRatio: 16 / 9,
           child: Stack(
             // mainAxisSize: MainAxisSize.min,
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -68,12 +67,9 @@ class PlayerBottomBar extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.center,
                   child: Padding(
-                    padding: videoStyle.videoDurationsPadding ??
-                        const EdgeInsets.only(top: 8.0),
+                    padding: videoStyle.videoDurationsPadding ?? const EdgeInsets.only(top: 8.0),
                     child: SizedBox(
-                      width: fullScreen
-                          ? MediaQuery.of(context).size.width/3
-                          : MediaQuery.of(context).size.width/2,
+                      width: fullScreen ? MediaQuery.of(context).size.width / 3 : MediaQuery.of(context).size.width / 2,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         mainAxisSize: MainAxisSize.max,
@@ -86,19 +82,18 @@ class PlayerBottomBar extends StatelessWidget {
                               });
                             },
                             child: Container(
-                              padding: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(0.5),
-                                shape: BoxShape.circle,
-                              ),
-                              child: videoStyle.backwardIcon ??
-                                  Icon(
-                                    Icons.replay_10_rounded,
-                                    color: videoStyle.forwardIconColor,
-                                    size: fullScreen ? 25: 20,
-                                    // size: videoStyle.forwardAndBackwardBtSize,
-                                  )
-                            ),
+                                padding: const EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.5),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: videoStyle.backwardIcon ??
+                                    Icon(
+                                      Icons.replay_10_rounded,
+                                      color: videoStyle.forwardIconColor,
+                                      size: fullScreen ? 25 : 20,
+                                      // size: videoStyle.forwardAndBackwardBtSize,
+                                    )),
                           ),
                           InkWell(
                             onTap: onPlayButtonTap,
@@ -109,33 +104,19 @@ class PlayerBottomBar extends StatelessWidget {
                                   color: Colors.black.withOpacity(0.5),
                                   shape: BoxShape.circle,
                                 ),
-                                child:  Icon(
-                                  controller.value.isPlaying
-                                      ? Icons.pause_outlined
-                                      : Icons.play_arrow_outlined,
-                                  color: videoStyle.playButtonIconColor ??
-                                      Colors.white,
-                                  size: fullScreen ? 35: 30,
+                                child: Icon(
+                                  controller.value.isPlaying ? Icons.pause_outlined : Icons.play_arrow_outlined,
+                                  color: videoStyle.playButtonIconColor ?? Colors.white,
+                                  size: fullScreen ? 35 : 30,
                                   // videoStyle.playButtonIconSize ?? (fullScreen ? 35: 25),
                                 ),
                               );
-                              if (videoStyle.playIcon != null &&
-                                  videoStyle.pauseIcon == null) {
-                                return controller.value.isPlaying
-                                    ? defaultIcon
-                                    : videoStyle.playIcon;
-                              }
-                              else if (videoStyle.pauseIcon != null &&
-                                  videoStyle.playIcon == null) {
-                                return controller.value.isPlaying
-                                    ? videoStyle.pauseIcon
-                                    : defaultIcon;
-                              }
-                              else if (videoStyle.playIcon != null &&
-                                  videoStyle.pauseIcon != null) {
-                                return controller.value.isPlaying
-                                    ? videoStyle.pauseIcon
-                                    : videoStyle.playIcon;
+                              if (videoStyle.playIcon != null && videoStyle.pauseIcon == null) {
+                                return controller.value.isPlaying ? defaultIcon : videoStyle.playIcon;
+                              } else if (videoStyle.pauseIcon != null && videoStyle.playIcon == null) {
+                                return controller.value.isPlaying ? videoStyle.pauseIcon : defaultIcon;
+                              } else if (videoStyle.playIcon != null && videoStyle.pauseIcon != null) {
+                                return controller.value.isPlaying ? videoStyle.pauseIcon : videoStyle.playIcon;
                               }
                               return defaultIcon;
                             }(),
@@ -152,11 +133,11 @@ class PlayerBottomBar extends StatelessWidget {
                                 color: Colors.black.withOpacity(0.5),
                                 shape: BoxShape.circle,
                               ),
-                              child:  videoStyle.forwardIcon ??
+                              child: videoStyle.forwardIcon ??
                                   Icon(
                                     Icons.forward_10_rounded,
                                     color: videoStyle.forwardIconColor,
-                                    size: fullScreen ? 25: 20,
+                                    size: fullScreen ? 25 : 20,
                                     // size: videoStyle.forwardAndBackwardBtSize,
                                   ),
                             ),
@@ -202,43 +183,8 @@ class PlayerBottomBar extends StatelessWidget {
                               ),
                         ),
                         const Spacer(),
-                        InkWell(
-                          onTap: () => ScreenUtils.toggleFullScreen(fullScreen),
-                          child: Container(
-                            color: Colors.transparent,
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 10.0),
-                              child: videoStyle.fullscreenIcon ??
-                                  Icon(
-                                    fullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
-                                    color: videoStyle.fullScreenIconColor,
-                                    size: videoStyle.fullScreenIconSize,
-                                  ),
-                            ),
-                          ),
-                        )
                       ],
                     ),
-                    // ProgressBar(
-                    //       // key: controller.mywidgetkey.value,
-                    //       barHeight: 2,
-                    //       baseBarColor: Colors.white,
-                    //       bufferedBarColor: Colors.green[300],
-                    //       progressBarColor: Colors.red,
-                    //       thumbColor: Colors.red,
-                    //       thumbRadius: 5,
-                    //       progress: controller.value.position,
-                    //       total: controller.value.duration,
-                    //       // buffered: controller.value.buffered,
-                    //       buffered: durationRangeToDuration(controller.value.buffered),
-                    //       onSeek: (value) => controller.seekTo(value),
-                    //       barCapShape: BarCapShape.round,
-                    //       timeLabelPadding: 0,
-                    //       timeLabelTextStyle: const TextStyle(
-                    //         fontSize: 0
-                    //       ),
-                    //        timeLabelLocation: TimeLabelLocation.none,
-                    //     ),
                     SizedBox(
                       height: 15,
                       child: VideoProgressIndicator(
@@ -249,14 +195,17 @@ class PlayerBottomBar extends StatelessWidget {
                               playedColor: Color.fromARGB(255, 206, 3, 3),
                               bufferedColor: Color.fromARGB(169, 77, 68, 68),
                               backgroundColor: Color.fromARGB(27, 255, 255, 255),
-
                             ),
                         padding: videoStyle.progressIndicatorPadding ?? const EdgeInsets.only(top: 10.0),
                       ),
                     ),
                     fullScreen
-                        ? const SizedBox(height: 30,)
-                        : const SizedBox(height: 0,),
+                        ? const SizedBox(
+                            height: 30,
+                          )
+                        : const SizedBox(
+                            height: 0,
+                          ),
                   ],
                 ),
               ),
@@ -266,6 +215,7 @@ class PlayerBottomBar extends StatelessWidget {
       ),
     );
   }
+
   Duration durationRangeToDuration(List<DurationRange> durationRange) {
     if (durationRange.isEmpty) {
       return Duration.zero;

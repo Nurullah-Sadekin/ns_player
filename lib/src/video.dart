@@ -125,8 +125,7 @@ class NsPlayer extends StatefulWidget {
     super.key,
     required this.url,
     this.aspectRatio = 16 / 9,
-    this.videoStyle = const VideoStyle(
-    ),
+    this.videoStyle = const VideoStyle(),
     this.videoLoadingStyle = const VideoLoadingStyle(),
     this.onFullScreen,
     this.onPlayingVideo,
@@ -150,8 +149,7 @@ class NsPlayer extends StatefulWidget {
   State<NsPlayer> createState() => _NsPlayerState();
 }
 
-class _NsPlayerState extends State<NsPlayer>
-    with SingleTickerProviderStateMixin {
+class _NsPlayerState extends State<NsPlayer> with SingleTickerProviderStateMixin {
   /// Video play type (hls,mp4,mkv,offline)
   String? playType;
 
@@ -247,12 +245,9 @@ class _NsPlayerState extends State<NsPlayer>
     urlCheck(widget.url);
 
     /// Control bar animation
-    controlBarAnimationController = AnimationController(
-        duration: const Duration(milliseconds: 300), vsync: this);
-    controlTopBarAnimation = Tween(begin: -(36.0 + 0.0 * 2), end: 0.0)
-        .animate(controlBarAnimationController);
-    controlBottomBarAnimation = Tween(begin: -(36.0 + 0.0 * 2), end: 0.0)
-        .animate(controlBarAnimationController);
+    controlBarAnimationController = AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
+    controlTopBarAnimation = Tween(begin: -(36.0 + 0.0 * 2), end: 0.0).animate(controlBarAnimationController);
+    controlBottomBarAnimation = Tween(begin: -(36.0 + 0.0 * 2), end: 0.0).animate(controlBarAnimationController);
 
     WidgetsBinding.instance.addPostFrameCallback((callback) {
       WidgetsBinding.instance.addPersistentFrameCallback((callback) {
@@ -267,7 +262,6 @@ class _NsPlayerState extends State<NsPlayer>
             SystemUiMode.manual,
             overlays: [SystemUiOverlay.bottom],
           );
-        
         } else if (orientation == Orientation.portrait) {
           // Portrait screen
           fullScr = false;
@@ -301,12 +295,7 @@ class _NsPlayerState extends State<NsPlayer>
       );
     }
 
-    if (widget.displayFullScreenAfterInit) {
-      // toggleFullScreen();
-      ScreenUtils.toggleFullScreen(fullScreen);
-    }
-
-    // FlutterScreenWake.keepOn(true);
+    if (widget.displayFullScreenAfterInit) {}
   }
 
   @override
@@ -320,9 +309,7 @@ class _NsPlayerState extends State<NsPlayer>
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: fullScreen
-          ? MediaQuery.of(context).size.calculateAspectRatio()
-          : widget.aspectRatio,
+      aspectRatio: fullScreen ? MediaQuery.of(context).size.calculateAspectRatio() : widget.aspectRatio,
       child: controller.value.isInitialized
           ? Stack(
               children: <Widget>[
@@ -339,22 +326,19 @@ class _NsPlayerState extends State<NsPlayer>
                     child: AspectRatio(
                       aspectRatio: controller.value.aspectRatio,
                       child: Container(
-                        foregroundDecoration: BoxDecoration(
-                          color: showMenu
-                              ? Colors.black.withOpacity(0.2)
-                              : Colors.transparent,
-                        ),
+                          foregroundDecoration: BoxDecoration(
+                            color: showMenu ? Colors.black.withOpacity(0.2) : Colors.transparent,
+                          ),
                           child: VideoPlayer(
-                              controller,
-                          )
-                      ),
+                            controller,
+                          )),
                     ),
                   ),
                 ),
                 ...videoBuiltInChildren(),
               ],
             )
-          : VideoLoading(loadingStyle: widget.videoLoadingStyle, thumbUrl:widget.url),
+          : VideoLoading(loadingStyle: widget.videoLoadingStyle, thumbUrl: widget.url),
     );
   }
 
@@ -368,32 +352,32 @@ class _NsPlayerState extends State<NsPlayer>
         visible: !showMenu,
         child: Center(
           child: AspectRatio(
-              aspectRatio: 16/9,
+            aspectRatio: 16 / 9,
             child: Stack(
-                  children: [
-                    fullScreen
-                        ? const SizedBox.shrink()
-                        : Align(
-                            alignment: Alignment.bottomCenter,
-                              child: SizedBox(
-                                height: 2,
-                                child: VideoProgressIndicator(
-                                  controller,
-                                  allowScrubbing: false,
-                                  colors: const VideoProgressColors(
-                                    playedColor: Color.fromARGB(255, 206, 3, 3),
-                                    bufferedColor: Color.fromARGB(169, 77, 68, 68),
-                                    backgroundColor: Color.fromARGB(27, 255, 255, 255),
-                                  ),
-                          padding: EdgeInsets.zero,
+              children: [
+                fullScreen
+                    ? const SizedBox.shrink()
+                    : Align(
+                        alignment: Alignment.bottomCenter,
+                        child: SizedBox(
+                          height: 2,
+                          child: VideoProgressIndicator(
+                            controller,
+                            allowScrubbing: false,
+                            colors: const VideoProgressColors(
+                              playedColor: Color.fromARGB(255, 206, 3, 3),
+                              bufferedColor: Color.fromARGB(169, 77, 68, 68),
+                              backgroundColor: Color.fromARGB(27, 255, 255, 255),
+                            ),
+                            padding: EdgeInsets.zero,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-             ),
-          )
+              ],
+            ),
+          ),
+        ),
+      )
       // m3u8List(),
     ];
   }
@@ -405,7 +389,7 @@ class _NsPlayerState extends State<NsPlayer>
       child: Align(
         alignment: Alignment.topCenter,
         child: AspectRatio(
-          aspectRatio:16/9,
+          aspectRatio: 16 / 9,
           child: Container(
             width: MediaQuery.of(context).size.width,
             padding: widget.videoStyle.actionBarPadding ??
@@ -419,14 +403,15 @@ class _NsPlayerState extends State<NsPlayer>
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 InkWell(
-                    onTap: ()=> showSettingsDialog(context),
-                    child: const Padding(
-                      padding: EdgeInsets.only(top: 8.0, left: 8.0,bottom:8.0),
-                      child: Icon(Icons.settings,
+                  onTap: () => showSettingsDialog(context),
+                  child: const Padding(
+                    padding: EdgeInsets.only(top: 8.0, left: 8.0, bottom: 8.0),
+                    child: Icon(
+                      Icons.settings,
                       color: Colors.white,
                       size: 30.0,
-                      ),
                     ),
+                  ),
                 ),
                 SizedBox(
                   width: widget.videoStyle.qualityButtonAndFullScrIcoSpace,
@@ -452,7 +437,7 @@ class _NsPlayerState extends State<NsPlayer>
     return Visibility(
       visible: controller.value.isBuffering,
       child: const Center(
-        child:  Text(
+        child: Text(
           // 'Buffering: ${bufferedSizeKB.toStringAsFixed(0)} KB of ${totalSizeKB.toStringAsFixed(0)} KB',
           'ভিডিও লোড হচ্ছে...',
           style: TextStyle(
@@ -518,16 +503,13 @@ class _NsPlayerState extends State<NsPlayer>
                     height: widget.videoStyle.liveDirectButtonSize,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: isAtLivePosition
-                          ? widget.videoStyle.liveDirectButtonColor
-                          : widget.videoStyle.liveDirectButtonDisableColor,
+                      color: isAtLivePosition ? widget.videoStyle.liveDirectButtonColor : widget.videoStyle.liveDirectButtonDisableColor,
                     ),
                   ),
                   const SizedBox(width: 8.0),
                   Text(
                     widget.videoStyle.liveDirectButtonText ?? 'Live',
-                    style: widget.videoStyle.liveDirectButtonTextStyle ??
-                        const TextStyle(color: Colors.white, fontSize: 16.0),
+                    style: widget.videoStyle.liveDirectButtonTextStyle ?? const TextStyle(color: Colors.white, fontSize: 16.0),
                   ),
                 ],
               ),
@@ -554,8 +536,7 @@ class _NsPlayerState extends State<NsPlayer>
             m3u8Quality = data.dataQuality ?? m3u8Quality;
           });
           onSelectQuality(data);
-          print(
-              "--- Quality select ---\nquality : ${data.dataQuality}\nlink : ${data.dataURL}");
+          print("--- Quality select ---\nquality : ${data.dataQuality}\nlink : ${data.dataURL}");
         }
         setState(() {
           m3u8Show = false;
@@ -597,8 +578,7 @@ class _NsPlayerState extends State<NsPlayer>
           );
         }
         log("urlEnd===============>: $playType");
-      }
-      else if (uri.pathSegments.last.endsWith("mp4")) {
+      } else if (uri.pathSegments.last.endsWith("mp4")) {
         setState(() {
           playType = "MP4";
         });
@@ -619,8 +599,7 @@ class _NsPlayerState extends State<NsPlayer>
           );
         }
         log("urlEnd===============>: $playType");
-      }
-      else if (uri.pathSegments.last.endsWith('webm')) {
+      } else if (uri.pathSegments.last.endsWith('webm')) {
         setState(() {
           playType = "WEBM";
         });
@@ -641,8 +620,7 @@ class _NsPlayerState extends State<NsPlayer>
           );
         }
         log("urlEnd===============>: $playType");
-      }
-      else if (uri.pathSegments.last.endsWith("m3u8")) {
+      } else if (uri.pathSegments.last.endsWith("m3u8")) {
         setState(() {
           playType = "HLS";
         });
@@ -651,9 +629,7 @@ class _NsPlayerState extends State<NsPlayer>
         print("urlEnd: M3U8");
         videoControlSetup(url);
         getM3U8(url);
-
-      }
-      else {
+      } else {
         print("urlEnd: null");
         videoControlSetup(url);
         getM3U8(url);
@@ -662,8 +638,7 @@ class _NsPlayerState extends State<NsPlayer>
     } else {
       setState(() {
         isOffline = true;
-        print(
-            "--- Current Video Status ---\noffline : $isOffline \n --- :3 Done url check ---");
+        print("--- Current Video Status ---\noffline : $isOffline \n --- :3 Done url check ---");
       });
 
       videoControlSetup(url);
@@ -697,99 +672,89 @@ class _NsPlayerState extends State<NsPlayer>
     }
 
     if (m3u8Content == null && videoUrl != null) {
-      http.Response response =
-          await http.get(Uri.parse(videoUrl), headers: widget.headers);
+      http.Response response = await http.get(Uri.parse(videoUrl), headers: widget.headers);
       if (response.statusCode == 200) {
         m3u8Content = utf8.decode(response.bodyBytes);
 
         List<File> cachedFiles = [];
         int index = 0;
 
-        List<RegExpMatch> matches =
-            regExp.allMatches(m3u8Content ?? '').toList();
-        print(
-            "--- HLS Data ----\n$m3u8Content \nTotal length: ${m3u8UrlList.length} \nFinish!!!");
+        List<RegExpMatch> matches = regExp.allMatches(m3u8Content ?? '').toList();
+        print("--- HLS Data ----\n$m3u8Content \nTotal length: ${m3u8UrlList.length} \nFinish!!!");
 
-        for(RegExpMatch regExpMatch in matches)
-        {
-            String quality = (regExpMatch.group(1)).toString();
-            String sourceURL = (regExpMatch.group(3)).toString();
-            final netRegex = RegExp(RegexResponse.regexHTTP);
-            final netRegex2 = RegExp(RegexResponse.regexURL);
-            final isNetwork = netRegex.hasMatch(sourceURL);
-            final match = netRegex2.firstMatch(videoUrl);
-            String url;
-            if (isNetwork) {
-              url = sourceURL;
-            } else {
-              print(
-                  'Match: ${match?.pattern} --- ${match?.groupNames} --- ${match?.input}');
-              final dataURL = match?.group(0);
-              url = "$dataURL$sourceURL";
-              print("--- HLS child url integration ---\nChild url :$url");
-            }
-            for(RegExpMatch regExpMatch2 in matches)  {
-                String audioURL = (regExpMatch2.group(1)).toString();
-                final isNetwork = netRegex.hasMatch(audioURL);
-                final match = netRegex2.firstMatch(videoUrl);
-                String auURL = audioURL;
-
-                if (!isNetwork) {
-                  print(
-                      'Match: ${match?.pattern} --- ${match?.groupNames} --- ${match?.input}');
-                  final auDataURL = match!.group(0);
-                  auURL = "$auDataURL$audioURL";
-                  print("Url network audio  $url $audioURL");
-                }
-
-                audioList.add(AudioModel(url: auURL));
-                print(audioURL);
-              }
-
-            String audio = "";
-            print("-- Audio ---\nAudio list length: ${audio.length}");
-            if (audioList.isNotEmpty) {
-              audio =
-                  """#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="audio-medium",NAME="audio",AUTOSELECT=YES,DEFAULT=YES,CHANNELS="2",
-                  URI="${audioList.last.url}"\n""";
-            } else {
-              audio = "";
-            }
-
-            if (widget.allowCacheFile) {
-              try {
-                var file = await FileUtils.cacheFileUsingWriteAsString(
-                  contents:
-                      """#EXTM3U\n#EXT-X-INDEPENDENT-SEGMENTS\n$audio#EXT-X-STREAM-INF:CLOSED-CAPTIONS=NONE,BANDWIDTH=1469712,
-                  RESOLUTION=$quality,FRAME-RATE=30.000\n$url""",
-                  quality: quality,
-                  videoUrl: url,
-                );
-
-                cachedFiles.add(file);
-
-                if (index < matches.length) {
-                  index++;
-                }
-
-                if (widget.allowCacheFile && index == matches.length) {
-                  widget.onCacheFileCompleted
-                      ?.call(cachedFiles.isEmpty ? null : cachedFiles);
-                }
-              } catch (e) {
-                print("Couldn't write file: $e");
-                widget.onCacheFileFailed?.call(e);
-              }
-            }
-            //need to add the video quality to the list by the quality order.and auto quality should be the first one.
-            //  var orderBasedSerializedList = m3u8UrlList.map((e) => e.dataQuality).toList();
-            m3u8UrlList.add(M3U8Data(dataQuality: quality, dataURL: url));
+        for (RegExpMatch regExpMatch in matches) {
+          String quality = (regExpMatch.group(1)).toString();
+          String sourceURL = (regExpMatch.group(3)).toString();
+          final netRegex = RegExp(RegexResponse.regexHTTP);
+          final netRegex2 = RegExp(RegexResponse.regexURL);
+          final isNetwork = netRegex.hasMatch(sourceURL);
+          final match = netRegex2.firstMatch(videoUrl);
+          String url;
+          if (isNetwork) {
+            url = sourceURL;
+          } else {
+            print('Match: ${match?.pattern} --- ${match?.groupNames} --- ${match?.input}');
+            final dataURL = match?.group(0);
+            url = "$dataURL$sourceURL";
+            print("--- HLS child url integration ---\nChild url :$url");
           }
+          for (RegExpMatch regExpMatch2 in matches) {
+            String audioURL = (regExpMatch2.group(1)).toString();
+            final isNetwork = netRegex.hasMatch(audioURL);
+            final match = netRegex2.firstMatch(videoUrl);
+            String auURL = audioURL;
+
+            if (!isNetwork) {
+              print('Match: ${match?.pattern} --- ${match?.groupNames} --- ${match?.input}');
+              final auDataURL = match!.group(0);
+              auURL = "$auDataURL$audioURL";
+              print("Url network audio  $url $audioURL");
+            }
+
+            audioList.add(AudioModel(url: auURL));
+            print(audioURL);
+          }
+
+          String audio = "";
+          print("-- Audio ---\nAudio list length: ${audio.length}");
+          if (audioList.isNotEmpty) {
+            audio = """#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="audio-medium",NAME="audio",AUTOSELECT=YES,DEFAULT=YES,CHANNELS="2",
+                  URI="${audioList.last.url}"\n""";
+          } else {
+            audio = "";
+          }
+
+          if (widget.allowCacheFile) {
+            try {
+              var file = await FileUtils.cacheFileUsingWriteAsString(
+                contents: """#EXTM3U\n#EXT-X-INDEPENDENT-SEGMENTS\n$audio#EXT-X-STREAM-INF:CLOSED-CAPTIONS=NONE,BANDWIDTH=1469712,
+                  RESOLUTION=$quality,FRAME-RATE=30.000\n$url""",
+                quality: quality,
+                videoUrl: url,
+              );
+
+              cachedFiles.add(file);
+
+              if (index < matches.length) {
+                index++;
+              }
+
+              if (widget.allowCacheFile && index == matches.length) {
+                widget.onCacheFileCompleted?.call(cachedFiles.isEmpty ? null : cachedFiles);
+              }
+            } catch (e) {
+              print("Couldn't write file: $e");
+              widget.onCacheFileFailed?.call(e);
+            }
+          }
+          //need to add the video quality to the list by the quality order.and auto quality should be the first one.
+          //  var orderBasedSerializedList = m3u8UrlList.map((e) => e.dataQuality).toList();
+          m3u8UrlList.add(M3U8Data(dataQuality: quality, dataURL: url));
+        }
         M3U8s m3u8s = M3U8s(m3u8s: m3u8UrlList);
 
         print(
-            "--- m3u8 File write --- ${m3u8UrlList.map((e) =>
-            e.dataQuality == e.dataURL).toList()} --- length : ${m3u8UrlList.length} --- Success");
+            "--- m3u8 File write --- ${m3u8UrlList.map((e) => e.dataQuality == e.dataURL).toList()} --- length : ${m3u8UrlList.length} --- Success");
         return m3u8s;
       }
     }
@@ -910,14 +875,13 @@ class _NsPlayerState extends State<NsPlayer>
 
   void videoInit(String? url) {
     if (isOffline == false) {
-      print(
-          "--- Player status ---\nplay url : $url\noffline : $isOffline\n--- start playing –––");
+      print("--- Player status ---\nplay url : $url\noffline : $isOffline\n--- start playing –––");
 
       if (playType == "MP4" || playType == "WEBM") {
         // Play MP4 and WEBM video
         controller = VideoPlayerController.networkUrl(
           Uri.parse(url!),
-           formatHint: VideoFormat.other,
+          formatHint: VideoFormat.other,
           httpHeaders: widget.headers ?? const <String, String>{},
           closedCaptionFile: widget.closedCaptionFile,
           videoPlayerOptions: widget.videoPlayerOptions,
@@ -945,9 +909,8 @@ class _NsPlayerState extends State<NsPlayer>
           });
       }
     } else {
-      print(
-          "--- Player status ---\nplay url : $url\noffline : $isOffline\n--- start playing –––");
-       hideQualityList = true;
+      print("--- Player status ---\nplay url : $url\noffline : $isOffline\n--- start playing –––");
+      hideQualityList = true;
       controller = VideoPlayerController.file(
         File(url!),
         closedCaptionFile: widget.closedCaptionFile,
@@ -968,14 +931,6 @@ class _NsPlayerState extends State<NsPlayer>
       }
       return;
     }
-
-    ModalRoute.of(context)?.addLocalHistoryEntry(
-      LocalHistoryEntry(
-        onRemove: () {
-          if (fullScreen) ScreenUtils.toggleFullScreen(fullScreen);
-        },
-      ),
-    );
   }
 
   void onSelectQuality(M3U8Data data) async {
@@ -990,8 +945,7 @@ class _NsPlayerState extends State<NsPlayer>
     } else {
       try {
         String text;
-        var file = await FileUtils.readFileFromPath(
-            videoUrl: data.dataURL ?? '', quality: data.dataQuality ?? '');
+        var file = await FileUtils.readFileFromPath(videoUrl: data.dataURL ?? '', quality: data.dataQuality ?? '');
         if (file != null) {
           print("Start reading file");
           text = await file.readAsString();
@@ -1033,9 +987,7 @@ class _NsPlayerState extends State<NsPlayer>
     print('Video list length: ${m3u8UrlList.length}');
     for (int i = 2; i < m3u8UrlList.length; i++) {
       try {
-        var file = await FileUtils.readFileFromPath(
-            videoUrl: m3u8UrlList[i].dataURL ?? '',
-            quality: m3u8UrlList[i].dataQuality ?? '');
+        var file = await FileUtils.readFileFromPath(videoUrl: m3u8UrlList[i].dataURL ?? '', quality: m3u8UrlList[i].dataQuality ?? '');
         var exists = await file?.exists();
         if (exists ?? false) {
           await file?.delete();
@@ -1102,8 +1054,7 @@ class _NsPlayerState extends State<NsPlayer>
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: const Text(''),
-                    )
-                ),
+                    )),
                 VideoQualityPicker(
                   videoData: m3u8UrlList,
                   videoStyle: widget.videoStyle,
@@ -1114,8 +1065,7 @@ class _NsPlayerState extends State<NsPlayer>
                         m3u8Quality = data.dataQuality ?? m3u8Quality;
                       });
                       onSelectQuality(data);
-                      print(
-                          "--- Quality select ---\nquality : ${data.dataQuality}\nlink : ${data.dataURL}");
+                      print("--- Quality select ---\nquality : ${data.dataQuality}\nlink : ${data.dataURL}");
                     }
                     setState(() {
                       m3u8Show = false;
@@ -1164,33 +1114,29 @@ class _NsPlayerState extends State<NsPlayer>
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: const Text(''),
-                    )
-                ),
+                    )),
                 Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: List.generate(playbackSpeeds.length,
-                      (index)=> ListTile(
-                        leading: Icon(
-                          Icons.check,
-                          color: playbackSpeeds[index] == playbackSpeed
-                              ?  Colors.green
-                              :  Colors.transparent,
-                          size: 20,),
-                        title: Text(
-                            playbackSpeeds[index] == 1.0
-                              ? 'Normal'
-                              : '${playbackSpeeds[index]}x',
-                        style: const TextStyle(
-                          fontSize: 14
-                        ),),
-                        onTap: () {
-                          setState(() {
-                            playbackSpeed = playbackSpeeds[index];
-                          });
-                          onPlayBackSpeedChange(setPlaybackSpeed: playbackSpeed);
-                          Navigator.pop(context);
-                        },
-                      )),
+                  children: List.generate(
+                      playbackSpeeds.length,
+                      (index) => ListTile(
+                            leading: Icon(
+                              Icons.check,
+                              color: playbackSpeeds[index] == playbackSpeed ? Colors.green : Colors.transparent,
+                              size: 20,
+                            ),
+                            title: Text(
+                              playbackSpeeds[index] == 1.0 ? 'Normal' : '${playbackSpeeds[index]}x',
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                            onTap: () {
+                              setState(() {
+                                playbackSpeed = playbackSpeeds[index];
+                              });
+                              onPlayBackSpeedChange(setPlaybackSpeed: playbackSpeed);
+                              Navigator.pop(context);
+                            },
+                          )),
                 ),
               ],
             ),
@@ -1202,156 +1148,146 @@ class _NsPlayerState extends State<NsPlayer>
 
   void onPlayBackSpeedChange({required double setPlaybackSpeed}) {
     if (controller.value.isPlaying) {
-      controller.pause() ;
+      controller.pause();
+      controller.setPlaybackSpeed(setPlaybackSpeed);
+      controller.play();
+    } else {
       controller.setPlaybackSpeed(setPlaybackSpeed);
       controller.play();
     }
-    else {
-      controller.setPlaybackSpeed(setPlaybackSpeed);
-      controller.play();
-    }
-
   }
 
-  Future showSettingsDialog(BuildContext context){
+  Future showSettingsDialog(BuildContext context) {
     return showModalBottomSheet(
         backgroundColor: Colors.transparent,
-        context: context, builder: (context) {
-      duration = controller.value.duration;
-      return Container(
-        margin: const EdgeInsets.only(top: 10.0),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10.0),
-            topRight: Radius.circular(10.0),
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  margin: const EdgeInsets.only(top: 10.0),
-                  width: 70,
-                  height: 5,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: const Text(''),
-                )
+        context: context,
+        builder: (context) {
+          duration = controller.value.duration;
+          return Container(
+            margin: const EdgeInsets.only(top: 10.0),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10.0),
+                topRight: Radius.circular(10.0),
+              ),
             ),
-            if(!hideQualityList)
-            ListTile(
-              leading: const Icon(Icons.tune),
-              title: const Text("Quality",style: TextStyle(fontSize: 14.0,color: Colors.black),),
-              trailing:  Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    m3u8Quality.toString() == 'Auto'
-                      ? 'Auto'
-                      : '${m3u8Quality.toString().split('x').last}p',
-                    style: const TextStyle(
-                        fontSize: 12.0,
-                        color: Colors.black54)
-                  ),
-                  const Icon(
-                    Icons.arrow_forward_ios,
-                    size: 15,
-                  ),
-                ],
-              ),
-              onTap: () {
-                Navigator.pop(context);
-                showResolutionDialog(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.slow_motion_video),
-              title: const Text("Speed",
-                style: TextStyle(fontSize: 14.0,color: Colors.black),),
-              trailing:  Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(playbackSpeed == 1.0
-                      ? 'Normal'
-                      : '${playbackSpeed}x',
-                    style: const TextStyle(
-                        fontSize: 12.0,
-                        color: Colors.black54),),
-                  const Icon(
-                    Icons.arrow_forward_ios,
-                    size: 15,),
-                ],
-              ),
-              onTap: () {
-                Navigator.pop(context);
-                showPlayBackSpeed(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                loop
-                  ? Icons.repeat_one
-                  : Icons.repeat,
-              ),
-              title: const Text("Loop Video",
-                style: TextStyle(
-                    fontSize: 14.0,color: Colors.black),),
-              trailing:  Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(loop
-                      ? 'On'
-                      : 'Off',
-                    style: const TextStyle(
-                        fontSize: 12.0,color: Colors.black54),),
-                  const Icon(Icons.arrow_forward_ios,size: 15),
-                ],
-              ),
-              onTap: () {
-                loop = !loop;
-                if(controller.value.isPlaying){
-                  controller.pause();
-                  controller.setLooping(loop);
-                  controller.play();
-                }
-                else{
-                  controller.setLooping(loop);
-                }
-                if(loop){
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Video loop is on"),
-                        duration: Duration(seconds: 3),
-                        backgroundColor: Colors.grey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 10.0),
+                      width: 70,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
-                  );
-                }
-                else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
+                      child: const Text(''),
+                    )),
+                if (!hideQualityList)
+                  ListTile(
+                    leading: const Icon(Icons.tune),
+                    title: const Text(
+                      "Quality",
+                      style: TextStyle(fontSize: 14.0, color: Colors.black),
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(m3u8Quality.toString() == 'Auto' ? 'Auto' : '${m3u8Quality.toString().split('x').last}p',
+                            style: const TextStyle(fontSize: 12.0, color: Colors.black54)),
+                        const Icon(
+                          Icons.arrow_forward_ios,
+                          size: 15,
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      showResolutionDialog(context);
+                    },
+                  ),
+                ListTile(
+                  leading: const Icon(Icons.slow_motion_video),
+                  title: const Text(
+                    "Speed",
+                    style: TextStyle(fontSize: 14.0, color: Colors.black),
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        playbackSpeed == 1.0 ? 'Normal' : '${playbackSpeed}x',
+                        style: const TextStyle(fontSize: 12.0, color: Colors.black54),
+                      ),
+                      const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 15,
+                      ),
+                    ],
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    showPlayBackSpeed(context);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(
+                    loop ? Icons.repeat_one : Icons.repeat,
+                  ),
+                  title: const Text(
+                    "Loop Video",
+                    style: TextStyle(fontSize: 14.0, color: Colors.black),
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        loop ? 'On' : 'Off',
+                        style: const TextStyle(fontSize: 12.0, color: Colors.black54),
+                      ),
+                      const Icon(Icons.arrow_forward_ios, size: 15),
+                    ],
+                  ),
+                  onTap: () {
+                    loop = !loop;
+                    if (controller.value.isPlaying) {
+                      controller.pause();
+                      controller.setLooping(loop);
+                      controller.play();
+                    } else {
+                      controller.setLooping(loop);
+                    }
+                    if (loop) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Video loop is on"),
+                          duration: Duration(seconds: 3),
+                          backgroundColor: Colors.grey,
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text("Video loop is off"),
                         duration: Duration(seconds: 3),
                         backgroundColor: Colors.grey,
-                      )
-                  );
-                }
-                Navigator.pop(context);
-              },
+                      ));
+                    }
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
-      );
-    });
+          );
+        });
   }
 
   void removeOverlay() {
