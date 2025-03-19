@@ -1,4 +1,3 @@
-import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:ns_player/ns_player.dart';
 import 'package:ns_player/src/utils/utils.dart';
@@ -23,7 +22,7 @@ class PlayerBottomBar extends StatelessWidget {
   /// The controller of the playing video.
   final VideoPlayerController controller;
 
-  bool fullScreen = false;
+  final bool fullScreen;
 
   /// If set to [true] the bottom bar will appear and if you want that user can not interact with the bottom bar you can set it to [false].
   /// Default value is [true].

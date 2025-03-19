@@ -117,12 +117,12 @@ class FileUtils {
       directory = await getApplicationDocumentsDirectory();
     }
 
-    final File file = File(
-        '${directory?.path ?? ''}/yoyo_${name.isNotEmpty ? '${name}_' : name}$quality.m3u8');
+    final File file = File('${directory?.path ?? ''}/yoyo_${name.isNotEmpty ? '${name}_' : name}$quality.m3u8');
     return await file.writeAsString(contents).then((f) {
       return f;
     }).catchError((err) {
       print('Write file error $err');
+      return err;
     });
   }
 
