@@ -9,5 +9,8 @@
 ## 0.0.1+1
 * Update Description and README.
 
-## 0.0.1+2
+## 0.0.2
 * update min sdk version
+* update README
+* update example
+* update version
